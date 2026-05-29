@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boundly · 消除人与人之间的理解摩擦</title>
+<meta name="description" content="Boundly — 让人和人之间多一点理解，少一点误解。门一直开着，节奏由你决定。">
+<style>
+  /* ============================================================
+     Boundly Landing Page
+     品牌色：深蓝灰系  ·  调性：克制、平静、不操纵
+     字体：黑体/宋体（中）· Calibri/Cambria（英），均配跨平台 fallback
+     ============================================================ */
+
+  :root {
+    --ink:        #1A2A3A;  /* 标题（最深） */
+    --ink-2:      #2E4057;  /* 副标题       */
+    --accent:     #3D5A80;  /* 强调         */
+    --line:       #5B7C99;  /* 引用/边框    */
+    --body:       #333333;  /* 正文         */
+    --bg:         #FBFBFA;  /* 极浅暖灰背景 */
+    --bg-soft:    #F4F5F6;  /* 区块底色     */
+    --hair:       #E6E8EB;  /* 极淡分隔线   */
+
+    /* 字体栈：尊重品牌规范，跨平台 fallback */
+    --sans-zh: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", "黑体", sans-serif;
+    --serif-zh: "Songti SC", "STSong", "SimSun", "宋体", serif;
+    --sans-en: Calibri, "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+    --serif-en: Cambria, "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+    --maxw: 760px;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    line-height: 1.75;
+    font-size: 17px;
+    /* 顶部一道极淡的光晕——暗示“门后的光”，克制不喧哗 */
+    background-image: radial-gradient(120% 60% at 50% -10%, rgba(61,90,128,0.06), transparent 60%);
+    background-repeat: no-repeat;
+  }
+
+  /* —— 语言驱动：默认中文，body.lang-en 时切换 —— */
+  body            { font-family: var(--serif-zh); }
+  body.lang-en    { font-family: var(--serif-en); }
+
+  body            .en { display: none; }
+  body            .zh { display: inline; }
+  body.lang-en    .en { display: inline; }
+  body.lang-en    .zh { display: none; }
+  /* 块级双语元素 */
+  .zh-block { display: block; }
+  .en-block { display: none; }
+  body.lang-en .zh-block { display: none; }
+  body.lang-en .en-block { display: block; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  /* ============ 顶栏 ============ */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(140%) blur(8px);
+    background: rgba(251,251,250,0.82);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s var(--ease);
+  }
+  header.scrolled { border-bottom-color: var(--hair); }
+  .nav {
+    max-width: var(--maxw); margin: 0 auto; padding: 18px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand {
+    font-family: var(--sans-en);
+    font-weight: 600; font-size: 19px; letter-spacing: 0.02em;
+    color: var(--ink); text-decoration: none;
+  }
+  .brand .dot { color: var(--line); }
+
+  .lang-toggle {
+    font-family: var(--sans-en);
+    font-size: 13px; letter-spacing: 0.04em;
+    color: var(--ink-2); background: none;
+    border: 1px solid var(--hair); border-radius: 999px;
+    padding: 6px 14px; cursor: pointer;
+    transition: all 0.3s var(--ease);
+  }
+  .lang-toggle:hover { border-color: var(--line); color: var(--ink); }
+
+  /* ============ 通用标题字体 ============ */
+  h1, h2, h3, .display, .brand, .label, .lang-toggle, .pill {
+    font-family: var(--sans-zh);
+  }
+  body.lang-en h1, body.lang-en h2, body.lang-en h3,
+  body.lang-en .display, body.lang-en .label, body.lang-en .pill {
+    font-family: var(--sans-en);
+  }
+
+  /* ============ Hero ============ */
+  .hero { padding: 110px 0 92px; }
+  .label {
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--line); margin-bottom: 28px;
+  }
+  .hero h1 {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.32;
+    letter-spacing: -0.005em;
+    margin-bottom: 30px;
+  }
+  .slogan {
+    color: var(--ink-2);
+    font-size: clamp(18px, 3vw, 21px);
+    line-height: 1.7;
+    border-left: 2px solid var(--line);
+    padding-left: 20px;
+    margin: 0 0 14px;
+  }
+  .mission {
+    color: var(--accent);
+    font-size: 15px;
+    margin-top: 38px;
+    font-family: var(--sans-zh);
+  }
+  body.lang-en .mission { font-family: var(--sans-en); }
+
+  /* ============ 区块通用 ============ */
+  section.block { padding: 78px 0; border-top: 1px solid var(--hair); }
+  .sec-label {
+    font-family: var(--sans-zh);
+    font-size: 13px; letter-spacing: 0.14em;
+    color: var(--line); margin-bottom: 34px;
+  }
+  body.lang-en .sec-label { font-family: var(--sans-en); }
+
+  /* ============ 三件事 ============ */
+  .things { display: flex; flex-direction: column; gap: 34px; }
+  .thing {
+    display: grid; grid-template-columns: 132px 1fr; gap: 24px;
+    align-items: baseline;
+  }
+  .thing .name {
+    font-family: var(--sans-zh);
+    color: var(--ink); font-weight: 600; font-size: 18px;
+  }
+  body.lang-en .thing .name { font-family: var(--sans-en); }
+  .thing .name .tag {
+    display: block; font-size: 12px; font-weight: 400;
+    color: var(--line); letter-spacing: 0.04em; margin-top: 4px;
+  }
+  .thing .desc { color: var(--body); font-size: 16.5px; }
+  .thing .soon {
+    font-size: 11px; color: var(--line);
+    border: 1px solid var(--hair); border-radius: 4px;
+    padding: 1px 7px; margin-left: 8px; white-space: nowrap;
+    font-family: var(--sans-en);
+    vertical-align: middle;
+  }
+
+  /* ============ 守住的边界 ============ */
+  .boundaries { background: var(--bg-soft); }
+  .vows { display: flex; flex-direction: column; gap: 22px; }
+  .vow {
+    display: grid; grid-template-columns: 22px 1fr; gap: 16px;
+    align-items: start; color: var(--ink-2); font-size: 16.5px;
+  }
+  .vow .mark {
+    color: var(--line); font-family: var(--sans-en);
+    font-size: 15px; line-height: 1.75;
+  }
+
+  /* ============ 信箱 / 修路日志 ============ */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .card-title {
+    font-family: var(--sans-zh); color: var(--ink);
+    font-size: 18px; font-weight: 600; margin-bottom: 14px;
+  }
+  body.lang-en .card-title { font-family: var(--sans-en); }
+  .card p { color: var(--body); font-size: 15.5px; margin-bottom: 16px; }
+  .mail {
+    font-family: var(--sans-en);
+    color: var(--accent); font-size: 15px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  }
+  .mail .addr { border-bottom: 1px solid var(--hair); }
+  .pill {
+    font-size: 10.5px; letter-spacing: 0.06em;
+    color: var(--line); border: 1px solid var(--hair);
+    border-radius: 999px; padding: 2px 9px;
+    font-family: var(--sans-en);
+  }
+  .quiet-link {
+    color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1px; transition: opacity 0.25s var(--ease);
+    font-family: var(--sans-zh);
+  }
+  body.lang-en .quiet-link { font-family: var(--sans-en); }
+  .quiet-link:hover { opacity: 0.6; }
+
+  /* ============ 页脚 ============ */
+  footer {
+    border-top: 1px solid var(--hair);
+    padding: 54px 0 70px; text-align: center;
+  }
+  .sign {
+    font-family: var(--sans-zh);
+    color: var(--ink); font-size: 16px; margin-bottom: 6px;
+  }
+  body.lang-en .sign { font-family: var(--sans-en); }
+  .meta { font-family: var(--sans-en); color: var(--line); font-size: 13px; letter-spacing: 0.04em; }
+
+  /* ============ 入场动画（克制，一次性） ============ */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  .hero .reveal { transition-delay: var(--d, 0s); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    .hero { padding: 76px 0 64px; }
+    .thing { grid-template-columns: 1fr; gap: 6px; }
+    .two-col { grid-template-columns: 1fr; gap: 40px; }
+    .wrap, .nav { padding-left: 22px; padding-right: 22px; }
+  }
+</style>
+</head>
+<body class="lang-zh">
+
+  <header id="topbar">
+    <div class="nav">
+      <a href="#" class="brand">Boundly<span class="dot">.</span></a>
+      <button class="lang-toggle" id="langBtn" aria-label="switch language">EN</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="label reveal" style="--d:0s">
+          <span class="zh">纵界融语 · 南京 · 2026</span>
+          <span class="en">Boundly · Nanjing · 2026</span>
+        </div>
+
+        <h1 class="reveal" style="--d:.12s">
+          <span class="zh">让人和人之间<br>多一点理解，少一点误解。</span>
+          <span class="en">A little more understanding between people.<br>A little less misunderstanding.</span>
+        </h1>
+
+        <p class="slogan reveal" style="--d:.24s">
+          <span class="zh">门一直开着，节奏由你决定。</span>
+          <span class="en">The door stays open. The pace is yours.</span>
+        </p>
+
+        <p class="mission reveal" style="--d:.36s">
+          <span class="zh">我们的使命：消除人与人之间的理解摩擦。</span>
+          <span class="en">Our mission: remove the friction of understanding between people.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== 三件事 ===== -->
+    <section class="block">
+      <div class="wrap">
+        <div class="sec-label reveal">
+          <span class="zh">我们在做三件事</span>
+          <span class="en">Three things we're building</span>
+        </div>
+
+        <div class="things">
+          <div class="thing reveal">
+            <div class="name">Bridgit
+              <span class="tag zh">社交工具</span>
+              <span class="tag en">a social tool</span>
+            </div>
+            <div class="desc">
+              <span class="zh">让人和人能真正听懂彼此。<span class="soon">进行中 / Building</span></span>
+              <span class="en">Helping people actually hear each other.<span class="soon">Building</span></span>
+            </div>
+          </div>
+
+          <div class="thing reveal">
+            <div class="name"><span class="zh">法律工具</span><span class="en">A legal tool</span>
+              <span class="tag zh">待命名</span>
+              <span class="tag en">to be named</span>
+            </div>
+            <div class="desc">
+              <span class="zh">让人能看懂规则和法律。</span>
+              <span class="en">Helping people understand rules and the law.</span>
+            </div>
+          </div>
+
+          <div class="thing reveal">
+            <div class="name"><span class="zh">AI 创业平台</span><span class="en">An AI startup platform</span>
+              <span class="tag zh">长期目标</span>
+              <span class="tag en">long-term</span>
+            </div>
+            <div class="desc">
+              <span class="zh">让人在 AI 时代找到自己的位置。</span>
+              <span class="en">Helping people find their place in the age of AI.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 守住的边界（核心承诺）===== -->
+    <section class="block boundaries">
+      <div class="wrap">
+        <div class="sec-label reveal">
+          <span class="zh">我们守住的边界</span>
+          <span class="en">The lines we hold</span>
+        </div>
+
+        <div class="vows">
+          <div class="vow reveal">
+            <span class="mark">—</span>
+            <span>
+              <span class="zh">主要功能永远不锁付费墙。</span>
+              <span class="en">Core features are never behind a paywall.</span>
+            </span>
+          </div>
+          <div class="vow reveal">
+            <span class="mark">—</span>
+            <span>
+              <span class="zh">不出售你的数据。</span>
+              <span class="en">We never sell your data.</span>
+            </span>
+          </div>
+          <div class="vow reveal">
+            <span class="mark">—</span>
+            <span>
+              <span class="zh">不用推送、红点、信息流陷阱绑架你的时间。</span>
+              <span class="en">No push notifications, no red dots, no feeds engineered to hold you.</span>
+            </span>
+          </div>
+          <div class="vow reveal">
+            <span class="mark">—</span>
+            <span>
+              <span class="zh">错了就承认，承认了就改，改了就告诉所有人。</span>
+              <span class="en">When we're wrong, we say so. When we say so, we fix it. Then we tell everyone.</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 信箱 + 修路日志 ===== -->
+    <section class="block">
+      <div class="wrap">
+        <div class="two-col">
+          <div class="card reveal">
+            <div class="card-title">
+              <span class="zh">写信给我们</span>
+              <span class="en">Write to us</span>
+            </div>
+            <p>
+              <span class="zh">真诚的来信，我们一封一封读，一对一回。</span>
+              <span class="en">Honest letters get read one by one, and answered one to one.</span>
+            </p>
+            <div class="mail">
+              <span class="addr">hello@getboundly.com</span>
+              <span class="pill">
+                <span class="zh">即将开放</span><span class="en">Coming soon</span>
+              </span>
+            </div>
+            <div class="mail">
+              <span class="addr">letters@getboundly.com</span>
+              <span class="pill">
+                <span class="zh">即将开放</span><span class="en">Coming soon</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="card reveal">
+            <div class="card-title">
+              <span class="zh">修路日志</span>
+              <span class="en">The Road Log</span>
+            </div>
+            <p>
+              <span class="zh">不是营销，是真实的决策记录——我们想清楚了什么、走错了什么、又改了什么。</span>
+              <span class="en">Not marketing. An honest record of what we figured out, what we got wrong, and what we changed.</span>
+            </p>
+            <a class="quiet-link" href="#" id="logLink">
+              <span class="zh">读修路日志</span>
+              <span class="en">Read the Road Log</span>
+            </a>
+            <p style="margin-top:12px;font-size:13px;color:var(--line);">
+              <span class="zh">（页面筹备中）</span>
+              <span class="en">(page in preparation)</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="sign">
+        <span class="zh">鹤唳淬锋（HeathTeng）</span>
+        <span class="en">HeathTeng</span>
+      </div>
+      <div class="meta">Boundly · 纵界融语网络科技 · getboundly.com</div>
+    </div>
+  </footer>
+
+<script>
+  // —— 语言切换 ——
+  const body = document.body;
+  const langBtn = document.getElementById('langBtn');
+  function setLang(lang) {
+    if (lang === 'en') {
+      body.classList.remove('lang-zh'); body.classList.add('lang-en');
+      body.setAttribute('lang', 'en'); langBtn.textContent = '中';
+    } else {
+      body.classList.remove('lang-en'); body.classList.add('lang-zh');
+      body.setAttribute('lang', 'zh'); langBtn.textContent = 'EN';
+    }
+  }
+  langBtn.addEventListener('click', () =>
+    setLang(body.classList.contains('lang-en') ? 'zh' : 'en')
+  );
+
+  // —— 顶栏滚动细线 ——
+  const topbar = document.getElementById('topbar');
+  const onScroll = () => topbar.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // —— 入场渐入（克制、一次性）——
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  } else {
+    // Hero 立刻按延迟入场
+    requestAnimationFrame(() =>
+      document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('in'))
+    );
+    // 其余滚动触发
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('section.block .reveal').forEach(el => io.observe(el));
+  }
+
+  // —— 修路日志占位提示（诚实，不假装能跳）——
+  document.getElementById('logLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    const zh = body.classList.contains('lang-zh');
+    alert(zh ? '修路日志页面还在筹备中。门一直开着。' : 'The Road Log is still in preparation. The door stays open.');
+  });
+</script>
+</body>
+</html>
