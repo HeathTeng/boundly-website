@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boundly · 让表达,真实抵达 | Where expression truly arrives</title>
+<meta name="description" content="Boundly 在人与人之间架桥,把理解的路一段一段修平。第一个产品 Bridgit 正在进行中。Together with our users, we pave the road of understanding.">
+<style>
+  /* ============ Tokens ============ */
+  :root {
+    --ink:        #1A2A3A;  /* 主色 · deep blue-gray */
+    --ink-2:      #2E4057;  /* 副色 */
+    --accent:     #3D5A80;  /* 强调 */
+    --muted:      #5B7C99;  /* 辅助 */
+    --body:       #333333;  /* 正文 */
+    --bg:         #F7F9FB;  /* 冷调近白 */
+    --card:       #FFFFFF;
+    --line:       #DDE5EC;
+    --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    font-family: var(--sans);
+    color: var(--body);
+    background: var(--bg);
+    line-height: 1.75;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ Language switching ============ */
+  html[data-lang="zh"] .en { display: none; }
+  html[data-lang="en"] .zh { display: none; }
+
+  /* ============ Layout ============ */
+  .wrap {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ============ Header ============ */
+  header {
+    padding: 28px 0;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .wordmark small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .lang-toggle {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--ink-2);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .lang-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ============ Hero ============ */
+  .hero {
+    padding: 110px 0 130px;
+    text-align: left;
+  }
+  .hero .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.28em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 34px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(34px, 6vw, 58px);
+    line-height: 1.35;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    max-width: 15em;
+  }
+  .hero .mission {
+    margin-top: 40px;
+    max-width: 34em;
+    font-size: 17px;
+    color: var(--ink-2);
+  }
+
+  /* 抵达线 · the arrival line — a line that travels, then arrives at a point */
+  .arrival {
+    display: flex;
+    align-items: center;
+    margin-top: 56px;
+    height: 7px;
+  }
+  .arrival .path {
+    height: 1px;
+    background: var(--muted);
+    width: 180px;
+  }
+  .arrival .point {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 10px;
+    flex: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .arrival .path {
+      width: 0;
+      animation: travel 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+    }
+    .arrival .point {
+      opacity: 0;
+      animation: arrive 0.5s ease 1.6s forwards;
+    }
+    @keyframes travel { to { width: 180px; } }
+    @keyframes arrive { to { opacity: 1; } }
+  }
+
+  /* ============ Sections ============ */
+  section {
+    padding: 90px 0;
+    border-top: 1px solid var(--line);
+  }
+  .section-head {
+    margin-bottom: 56px;
+  }
+  .section-head h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(24px, 3.4vw, 32px);
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .section-head p {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 36em;
+  }
+
+  /* ============ Product: Bridgit ============ */
+  .product-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 48px;
+  }
+  .product-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .product-name {
+    font-family: var(--serif);
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .badge {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge-building {
+    color: #fff;
+    background: var(--accent);
+  }
+  .badge-road {
+    color: var(--muted);
+    border: 1px solid var(--line);
+    background: none;
+  }
+  .product-dim {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .product-tagline {
+    margin-top: 22px;
+    font-size: 18px;
+    color: var(--ink-2);
+    max-width: 32em;
+    line-height: 1.7;
+  }
+  .concepts {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .concept .concept-line {
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+    margin-bottom: 20px;
+  }
+  .concept h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .concept .concept-en {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .concept p {
+    margin-top: 14px;
+    font-size: 14.5px;
+    color: var(--body);
+    line-height: 1.85;
+  }
+
+  /* ============ On the road ============ */
+  .road-list {
+    margin-top: 48px;
+    border-top: 1px solid var(--line);
+  }
+  .road-item {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 30px 4px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .road-item .road-name {
+    font-family: var(--serif);
+    font-size: 21px;
+    color: var(--ink);
+    flex: none;
+  }
+  .road-item .road-desc {
+    font-size: 14.5px;
+    color: var(--body);
+    flex: 1 1 20em;
+  }
+  .road-item .badge { margin-left: auto; }
+
+  /* ============ Boundaries ============ */
+  .boundaries {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .boundary {
+    background: var(--card);
+    padding: 40px 36px;
+  }
+  .boundary h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 21px;
+    color: var(--ink);
+  }
+  .boundary .b-en {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .boundary p {
+    margin-top: 14px;
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+
+  /* ============ Door quote ============ */
+  .door {
+    text-align: center;
+    padding: 130px 0;
+  }
+  .door blockquote {
+    font-family: var(--serif);
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .door .door-sub {
+    margin-top: 18px;
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ============ Subscribe ============ */
+  .subscribe-box {
+    max-width: 560px;
+  }
+  .subscribe-form {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .subscribe-form input[type="email"] {
+    flex: 1 1 240px;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--ink);
+    padding: 13px 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--card);
+    transition: border-color 0.2s;
+  }
+  .subscribe-form input[type="email"]::placeholder { color: var(--muted); }
+  .subscribe-form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .subscribe-form button {
+    font-family: var(--sans);
+    font-size: 15px;
+    color: #fff;
+    background: var(--ink);
+    border: none;
+    border-radius: 8px;
+    padding: 13px 32px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .subscribe-form button:hover { background: var(--accent); }
+  .form-note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    width: 100%;
+  }
+  .form-error {
+    margin-top: 10px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    display: none;
+  }
+  .form-error.show { display: block; }
+  .form-done {
+    margin-top: 32px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .form-done.show { display: flex; }
+  .form-done .point {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+
+  /* ============ Footer ============ */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 56px 0 72px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 2.1;
+  }
+  footer .east {
+    font-family: var(--serif);
+    color: var(--ink-2);
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  /* ============ Scroll reveal (subtle) ============ */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 760px) {
+    .hero { padding: 70px 0 84px; }
+    section { padding: 64px 0; }
+    .door { padding: 90px 0; }
+    .product-card { padding: 32px 24px; }
+    .concepts { grid-template-columns: 1fr; gap: 32px; }
+    .boundaries { grid-template-columns: 1fr; }
+    .boundary { padding: 30px 24px; }
+    .road-item .badge { margin-left: 0; }
+    .subscribe-form button { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="header-inner">
+    <div class="wordmark">
+      Boundly
+      <small><span class="zh">纵界融语</span><span class="en">NANJING · 2026</span></small>
+    </div>
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language / 切换语言">
+      <span class="zh">EN</span><span class="en">中文</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ Hero ============ -->
+  <div class="hero wrap">
+    <p class="eyebrow">
+      <span class="zh">从东方出发 · 走向世界</span>
+      <span class="en">FROM THE EAST, TOWARD THE WORLD</span>
+    </p>
+    <h1>
+      <span class="zh">让表达,真实抵达。</span>
+      <span class="en">Where expression truly arrives.</span>
+    </h1>
+    <p class="mission">
+      <span class="zh">我们和用户一起,在人与人之间架桥,把理解的路一段一段修平——让真实的意思,真实地抵达。</span>
+      <span class="en">Together with our users, we build bridges between people and pave the road of understanding — one step at a time. So that what you truly mean, truly arrives.</span>
+    </p>
+    <div class="arrival" aria-hidden="true">
+      <div class="path"></div>
+      <div class="point"></div>
+    </div>
+  </div>
+
+  <!-- ============ Bridgit ============ -->
+  <section id="bridgit">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>
+          <span class="zh">我们在做的事</span>
+          <span class="en">What we're building</span>
+        </h2>
+        <p>
+          <span class="zh">Boundly 的所有产品,本质上都是同一种东西:摩擦消除器。第一座桥,已经在建。</span>
+          <span class="en">Every Boundly product is, at heart, the same thing: a friction remover. The first bridge is under construction.</span>
+        </p>
+      </div>
+
+      <div class="product-card reveal">
+        <div class="product-top">
+          <span class="product-name">Bridgit</span>
+          <span class="badge badge-building">
+            <span class="zh">进行中 · Building</span>
+            <span class="en">Building</span>
+          </span>
+          <span class="product-dim">
+            <span class="zh">人 ↔ 人</span>
+            <span class="en">PEOPLE ↔ PEOPLE</span>
+          </span>
+        </div>
+        <p class="product-tagline">
+          <span class="zh">一个让"我想表达的意思 = 你接收到的意思"成为可能的社交平台。不是又一个翻译软件——每个人都带着一个自己的小 AI 进入对话,像笔友,不像速配。</span>
+          <span class="en">A social platform where what you mean is what they receive. Not another translation app — everyone brings their own small AI into the conversation. Pen pals, not speed dating.</span>
+        </p>
+
+        <div class="concepts">
+          <div class="concept">
+            <div class="concept-line" aria-hidden="true"></div>
+            <h3>
+              <span class="zh">双层表达</span>
+              <span class="en">Two-layer expression</span>
+            </h3>
+            <div class="concept-en">
+              <span class="zh">TWO-LAYER EXPRESSION</span>
+              <span class="en">双层表达</span>
+            </div>
+            <p>
+              <span class="zh">每条消息可以有两层:你的原话永远在上,AI 帮你抵达的那一层,用不用、给不给对方看,由你决定。AI 是辅助表达,不是代替表达。</span>
+              <span class="en">Every message can carry two layers: your own words always on top, and an optional AI layer that helps them arrive. Whether to use it, whether to show it — your call. AI assists expression; it never replaces it.</span>
+            </p>
+          </div>
+
+          <div class="concept">
+            <div class="concept-line" aria-hidden="true"></div>
+            <h3>
+              <span class="zh">可问责的去身份化</span>
+              <span class="en">Accountable de-identification</span>
+            </h3>
+            <div class="concept-en">
+              <span class="zh">ACCOUNTABLE DE-IDENTIFICATION</span>
+              <span class="en">可问责的去身份化</span>
+            </div>
+            <p>
+              <span class="zh">实名等于被监控,匿名等于不负责任——Bridgit 走第三条路:你不知道他是谁,但你知道他说的话,他要负责。</span>
+              <span class="en">Real names mean surveillance; anonymity means no accountability. Bridgit takes a third path: you don't know who they are, but you know they stand behind every word.</span>
+            </p>
+          </div>
+
+          <div class="concept">
+            <div class="concept-line" aria-hidden="true"></div>
+            <h3>
+              <span class="zh">笔友式异步匹配</span>
+              <span class="en">Pen-pal matching</span>
+            </h3>
+            <div class="concept-en">
+              <span class="zh">PEN-PAL ASYNC MATCHING</span>
+              <span class="en">笔友式异步匹配</span>
+            </div>
+            <p>
+              <span class="zh">别人的匹配是电话,Bridgit 的匹配是信箱。你先说话,对方上线后回复。等待不是缺陷,是这个产品的性格。</span>
+              <span class="en">Other apps match like a phone call; Bridgit matches like a mailbox. You write first; they reply when they arrive. Waiting isn't a flaw — it's this product's character.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- On the road -->
+      <div class="road-list reveal">
+        <div class="road-item">
+          <span class="road-name">
+            <span class="zh">法律工具</span>
+            <span class="en">Legal tool</span>
+          </span>
+          <span class="road-desc">
+            <span class="zh">人 ↔ 制度 · 让法律从少数人的特权语言,变回所有人的公共工具。</span>
+            <span class="en">People ↔ institutions · Turning law back from a private dialect of the few into a public tool for everyone.</span>
+          </span>
+          <span class="badge badge-road">
+            <span class="zh">在路上</span>
+            <span class="en">On the road</span>
+          </span>
+        </div>
+        <div class="road-item">
+          <span class="road-name">
+            <span class="zh">AI 创业平台</span>
+            <span class="en">AI venture base</span>
+          </span>
+          <span class="road-desc">
+            <span class="zh">人 ↔ 机会 · 让有想法但缺少入场券的人,不必先成为 AI 专家,也能在 AI 时代站稳脚跟。</span>
+            <span class="en">People ↔ opportunity · So those with ideas but no entry ticket can find their footing in the AI era — without becoming AI experts first.</span>
+          </span>
+          <span class="badge badge-road">
+            <span class="zh">在路上</span>
+            <span class="en">On the road</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Boundaries ============ -->
+  <section id="boundaries">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>
+          <span class="zh">我们守住的边界</span>
+          <span class="en">The boundaries we hold</span>
+        </h2>
+        <p>
+          <span class="zh">边界不是为了把人挡在外面,是为了让走在路上的人走得更稳一点。</span>
+          <span class="en">Boundaries aren't for keeping people out. They're so that those walking the road can walk it more steadily.</span>
+        </p>
+      </div>
+
+      <div class="boundaries reveal">
+        <div class="boundary">
+          <h3><span class="zh">不锁付费墙</span><span class="en">No paywall on what matters</span></h3>
+          <div class="b-en"><span class="zh">NO PAYWALL ON WHAT MATTERS</span><span class="en">不锁付费墙</span></div>
+          <p>
+            <span class="zh">任何能让你得到核心价值的功能,都不会因为不付费而不可用。我们卖的是好用、省时、能力的扩展——不是被卡住的功能。</span>
+            <span class="en">Nothing that delivers core value will ever be locked behind payment. We sell usefulness, time saved, and expanded ability — never features held hostage.</span>
+          </p>
+        </div>
+        <div class="boundary">
+          <h3><span class="zh">不卖数据</span><span class="en">We don't sell your data</span></h3>
+          <div class="b-en"><span class="zh">WE DON'T SELL YOUR DATA</span><span class="en">不卖数据</span></div>
+          <p>
+            <span class="zh">你不是流量,不是数据,你是真正的人。你的数据可以随时导出,你想走,我们打开门。</span>
+            <span class="en">You are not traffic. You are not data points. You are a person. Your data is always exportable — and if you want to leave, we hold the door.</span>
+          </p>
+        </div>
+        <div class="boundary">
+          <h3><span class="zh">不用推送陷阱</span><span class="en">No push traps</span></h3>
+          <div class="b-en"><span class="zh">NO PUSH TRAPS</span><span class="en">不用推送陷阱</span></div>
+          <p>
+            <span class="zh">没有红点焦虑,没有信息流陷阱,没有"再刷一下"的钩子。如果你打开我们产品的时间在变短,而生活在变好——那是我们最大的成功。</span>
+            <span class="en">No red-dot anxiety, no infinite feeds, no "one more scroll" hooks. If you spend less time in our products while your life gets better — that is our greatest success.</span>
+          </p>
+        </div>
+        <div class="boundary">
+          <h3><span class="zh">错了公开改</span><span class="en">Mistakes, corrected in public</span></h3>
+          <div class="b-en"><span class="zh">MISTAKES, CORRECTED IN PUBLIC</span><span class="en">错了公开改</span></div>
+          <p>
+            <span class="zh">我们一定会犯错。我们承诺的不是永远正确,而是:错了就承认,承认了就改,改了就告诉所有人。修路日志会公开记录每一次修正。</span>
+            <span class="en">We will make mistakes. What we promise is not perfection, but this: admit it, fix it, and tell everyone. Our public road log records every correction.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Door quote ============ -->
+  <section class="door">
+    <div class="wrap reveal">
+      <blockquote>
+        <span class="zh">门一直开着,节奏由你决定。</span>
+        <span class="en">The door stays open.<br>The pace is yours.</span>
+      </blockquote>
+      <p class="door-sub">
+        <span class="zh">The door stays open. The pace is yours.</span>
+        <span class="en">门一直开着,节奏由你决定。</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Subscribe ============ -->
+  <section id="subscribe">
+    <div class="wrap reveal">
+      <div class="subscribe-box">
+        <div class="section-head" style="margin-bottom: 0;">
+          <h2>
+            <span class="zh">保持联系</span>
+            <span class="en">Stay in touch</span>
+          </h2>
+          <p>
+            <span class="zh">留下邮箱,有值得说的进展时,我们会写信告诉你。不催促,不轰炸,随时可以退订。</span>
+            <span class="en">Leave your email, and we'll write when there's something worth telling. No urgency, no noise — unsubscribe anytime.</span>
+          </p>
+        </div>
+
+        <form class="subscribe-form" id="subscribeForm" novalidate>
+          <input type="email" id="emailInput" name="email" autocomplete="email"
+                 placeholder="you@example.com" aria-label="Email / 邮箱">
+          <button type="submit">
+            <span class="zh">订阅</span>
+            <span class="en">Subscribe</span>
+          </button>
+          <p class="form-error" id="formError" role="alert">
+            <span class="zh">请输入有效的邮箱地址。</span>
+            <span class="en">Please enter a valid email address.</span>
+          </p>
+        </form>
+
+        <div class="form-done" id="formDone" role="status">
+          <span class="point" aria-hidden="true"></span>
+          <span>
+            <span class="zh">已收到,我们会保持联系。</span>
+            <span class="en">Received. We'll keep in touch.</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ Footer ============ -->
+<footer>
+  <div class="wrap">
+    <p class="east">
+      <span class="zh">太阳永远从东方升起。</span>
+      <span class="en">The sun always rises in the east.</span>
+    </p>
+    <p>
+      <span class="zh">纵界融语网络科技有限公司 · Boundly · 南京 · 2026</span>
+      <span class="en">Boundly · Nanjing · 2026</span>
+    </p>
+    <p>getboundly.com</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* ---------- Language toggle ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById('langToggle');
+
+  function applyLang(lang) {
+    root.setAttribute('data-lang', lang);
+    root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+    try { localStorage.setItem('boundly-lang', lang); } catch (e) {}
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem('boundly-lang'); } catch (e) {}
+  if (saved === 'en' || saved === 'zh') applyLang(saved);
+
+  toggle.addEventListener('click', function () {
+    applyLang(root.getAttribute('data-lang') === 'zh' ? 'en' : 'zh');
+  });
+
+  /* ---------- Subscribe form (front-end only; Resend backend comes later) ---------- */
+  var form = document.getElementById('subscribeForm');
+  var input = document.getElementById('emailInput');
+  var error = document.getElementById('formError');
+  var done = document.getElementById('formDone');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = input.value.trim();
+    var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid) {
+      error.classList.add('show');
+      input.focus();
+      return;
+    }
+    error.classList.remove('show');
+    form.style.display = 'none';
+    done.classList.add('show');
+  });
+
+  input.addEventListener('input', function () {
+    error.classList.remove('show');
+  });
+
+  /* ---------- Subtle scroll reveal ---------- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealed = document.querySelectorAll('.reveal');
+  if (reduced || !('IntersectionObserver' in window)) {
+    revealed.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealed.forEach(function (el) { io.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>
