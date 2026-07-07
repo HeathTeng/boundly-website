@@ -235,6 +235,31 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 40px;
   }
+  .proto-row {
+    margin-top: 44px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .proto-link {
+    display: inline-block;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 9px 24px;
+    font-size: 14.5px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .proto-link:hover {
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+  }
+  .proto-note {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
   .concept .concept-line {
     width: 28px;
     height: 1px;
@@ -563,6 +588,14 @@
               <span class="en">Other apps match like a phone call; Bridgit matches like a mailbox. You write first; they reply when they arrive. Waiting isn't a flaw — it's this product's character.</span>
             </p>
           </div>
+        </div>
+
+        <div class="proto-row">
+          <a class="proto-link" href="https://heathteng.github.io/bridgit/" target="_blank" rel="noopener">
+            <span class="zh">体验原型 →</span>
+            <span class="en">Try the prototype →</span>
+          </a>
+          <span class="proto-note">早期原型 · Early prototype</span>
         </div>
       </div>
 
