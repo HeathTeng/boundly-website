@@ -569,7 +569,12 @@
     font-size: 13.5px;
     color: var(--bb-on-hero-muted);
   }
-  .bb-trust-more { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .privacy-sec { border-top: none; padding: 0 0 40px; }
+  .privacy-fold { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 4px; font-size: 14px; color: var(--muted); }
+  .privacy-fold summary { cursor: pointer; }
+  .privacy-fold ul { margin: 12px 0 0; padding-left: 1.2em; }
+  .privacy-fold li { margin-top: 8px; line-height: 1.8; max-width: 52em; }
+  .privacy-fold li b { color: var(--ink); font-weight: 600; margin-right: 6px; }
   .bb-trust span::before {
     content: "";
     display: inline-block;
@@ -855,7 +860,6 @@
         <span class="zh">数据只在你的电脑上，我们收不到</span><span class="en">Your data stays on your computer</span>
         <span class="zh">只读取，不会替你提交作业</span><span class="en">Read-only: it never submits anything</span>
         <span class="zh">不是学校官方工具</span><span class="en">Not an official school tool</span>
-        <a class="bb-trust-more" href="#bb-privacy"><span class="zh">隐私和安全说明 →</span><span class="en">Privacy details →</span></a>
       </div>
 
       </div>
@@ -1046,77 +1050,34 @@
     </div>
   </section>
 
-  <!-- ============ Bridgeboard privacy ============ -->
-  <section class="bb bb-section" id="bb-privacy">
+  <!-- ============ Bridgeboard privacy (folded) ============ -->
+  <section class="bb privacy-sec" id="bb-privacy">
     <div class="wrap">
-      <div class="section-head reveal">
-        <h2>
-          <span class="zh">隐私和安全：你有权知道</span>
-          <span class="en">Privacy and safety: what you should know</span>
-        </h2>
-        <p>
-          <span class="zh">Bridgeboard 要用你的学校账号，所以先把它碰什么、不碰什么说清楚。</span>
-          <span class="en">Bridgeboard uses your school account, so here is exactly what it touches and what it doesn’t.</span>
+      <details class="privacy-fold" id="bbPrivacyFold">
+        <summary><span class="zh">隐私和安全说明</span><span class="en">Privacy and safety</span></summary>
+        <ul>
+          <li><b><span class="zh">只在你的电脑上运行</span><span class="en">Runs only on your computer</span></b>
+            <span class="zh">面板只在本机地址 127.0.0.1 上运行，别的电脑、手机和网页都连不上。你的课程、作业和清单存在你自己电脑里，我们收不到，也没有自己的服务器。</span><span class="en">The panel listens on 127.0.0.1 only, so other computers, phones and web pages cannot reach it. Your courses, assignments and checklist stay on your own computer. We receive none of it and run no server of our own.</span></li>
+          <li><b><span class="zh">只读取，不替你做任何事</span><span class="en">Read-only</span></b>
+            <span class="zh">它只读取 Blackboard 上的内容，不能交作业、不能做测验，也不会改动你账号里的任何东西。</span><span class="en">It only reads from Blackboard. It cannot submit work or take quizzes, and it changes nothing in your account.</span></li>
+          <li><b><span class="zh">登录在学校自己的网页上</span><span class="en">You sign in on your school’s own page</span></b>
+            <span class="zh">登录时会打开一个单独的浏览器窗口，你在学校的登录页输入账号密码，Bridgeboard 看不到你的密码。登录状态加密保存在你电脑上（文件夹 .blackboard-mcp），窗口用完自动关闭。</span><span class="en">Signing in opens a separate browser window on your school’s own sign-in page. Bridgeboard never sees your password. The session is stored encrypted on your computer (the .blackboard-mcp folder) and the window closes when done.</span></li>
+          <li><b><span class="zh">只有手机提醒会发出去</span><span class="en">Only phone alerts leave your computer</span></b>
+            <span class="zh">手机提醒默认关闭。只有你自己打开、测试成功之后，才会把作业名、课程名、截止时间和链接经 Bark（api.day.app）或 ntfy（ntfy.sh）发到你的手机。打开「隐藏作业名」就连名字和链接都不发。登录信息和消息内容永远不会发出。</span><span class="en">Phone alerts are off by default. Only after you switch them on and a test reaches your phone are assignment and course names, due times and links sent through Bark (api.day.app) or ntfy (ntfy.sh). Turn on 隐藏作业名 to send no names or links. Sign-in data and message text are never sent.</span></li>
+          <li><b><span class="zh">有几件事要你自己注意</span><span class="en">A few things are up to you</span></b>
+            <span class="zh">不要把 .blackboard-mcp 文件夹或复制的 cURL 发给任何人，它们相当于你的登录。ntfy 的频道名也像密码一样别外传。Bridgeboard 不是学校官方工具，使用前可以看看学校的 IT 使用规定。</span><span class="en">Never share the .blackboard-mcp folder or a copied cURL: they work like your login. Keep your ntfy topic private like a password. Bridgeboard is not an official school tool; check your school’s IT acceptable-use policy.</span></li>
+          <li><b><span class="zh">代码公开，这个网站也不追踪你</span><span class="en">Open code, and no tracking here</span></b>
+            <span class="zh">全部代码公开在 GitHub 上，谁都可以检查它做了什么。面板里的「意见反馈」只是打开你自己的邮件软件。这个网站不用 Cookie、不做访问统计（只在你的浏览器里记住中英文选择），订阅只是用你的邮箱给我们写一封信。</span><span class="en">All the code is public on GitHub for anyone to check. 意见反馈 in the panel only opens your own mail app. This website uses no cookies or analytics (your browser only remembers your language choice); subscribing just sends us an email from your own mail app.</span></li>
+        </ul>
+        <p class="faq-more">
+          <a href="https://github.com/HeathTeng/Bridgeboard#隐私和安全--privacy-and-safety" target="_blank" rel="noopener">
+            <span class="zh">GitHub 上的完整说明 →</span><span class="en">Full details on GitHub →</span>
+          </a>
+          &nbsp;·&nbsp;
+          <span class="zh">有疑问写信到 <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
+          <span class="en">Questions? Write to <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
         </p>
-      </div>
-      <div class="bb-features reveal">
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">只在你的电脑上运行</span><span class="en">Runs only on your computer</span></h3>
-          <p>
-            <span class="zh">面板只在本机地址 127.0.0.1 上运行，别的电脑、手机和网页都连不上。你的课程、作业和清单存在你自己电脑里，我们收不到，也没有自己的服务器。</span>
-            <span class="en">The panel listens on 127.0.0.1 only, so other computers, phones and web pages cannot reach it. Your courses, assignments and checklist stay on your own computer. We receive none of it and run no server of our own.</span>
-          </p>
-        </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">只读取，不替你做任何事</span><span class="en">Read-only</span></h3>
-          <p>
-            <span class="zh">它只读取 Blackboard 上的内容，不能交作业、不能做测验，也不会改动你账号里的任何东西。</span>
-            <span class="en">It only reads from Blackboard. It cannot submit work or take quizzes, and it changes nothing in your account.</span>
-          </p>
-        </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">登录在学校自己的网页上</span><span class="en">You sign in on your school’s own page</span></h3>
-          <p>
-            <span class="zh">登录时会打开一个单独的浏览器窗口，你在学校的登录页输入账号密码，Bridgeboard 看不到你的密码。登录状态加密保存在你电脑上（文件夹 .blackboard-mcp），窗口用完自动关闭。</span>
-            <span class="en">Signing in opens a separate browser window on your school’s own sign-in page. Bridgeboard never sees your password. The session is stored encrypted on your computer (the .blackboard-mcp folder) and the window closes when done.</span>
-          </p>
-        </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">只有手机提醒会发出去</span><span class="en">Only phone alerts leave your computer</span></h3>
-          <p>
-            <span class="zh">手机提醒默认关闭。只有你自己打开、测试成功之后，才会把作业名、课程名、截止时间和链接经 Bark（api.day.app）或 ntfy（ntfy.sh）发到你的手机。打开「隐藏作业名」就连名字和链接都不发。登录信息和消息内容永远不会发出。</span>
-            <span class="en">Phone alerts are off by default. Only after you switch them on and a test reaches your phone are assignment and course names, due times and links sent through Bark (api.day.app) or ntfy (ntfy.sh). Turn on 隐藏作业名 to send no names or links. Sign-in data and message text are never sent.</span>
-          </p>
-        </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">有几件事要你自己注意</span><span class="en">A few things are up to you</span></h3>
-          <p>
-            <span class="zh">不要把 .blackboard-mcp 文件夹或复制的 cURL 发给任何人，它们相当于你的登录。ntfy 的频道名也像密码一样别外传。Bridgeboard 不是学校官方工具，使用前可以看看学校的 IT 使用规定。</span>
-            <span class="en">Never share the .blackboard-mcp folder or a copied cURL: they work like your login. Keep your ntfy topic private like a password. Bridgeboard is not an official school tool; check your school’s IT acceptable-use policy.</span>
-          </p>
-        </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">代码公开，这个网站也不追踪你</span><span class="en">Open code, and no tracking here</span></h3>
-          <p>
-            <span class="zh">全部代码公开在 GitHub 上，谁都可以检查它做了什么。面板里的「意见反馈」只是打开你自己的邮件软件。这个网站不用 Cookie、不做访问统计（只在你的浏览器里记住中英文选择），订阅只是用你的邮箱给我们写一封信。</span>
-            <span class="en">All the code is public on GitHub for anyone to check. 意见反馈 in the panel only opens your own mail app. This website uses no cookies or analytics (your browser only remembers your language choice); subscribing just sends us an email from your own mail app.</span>
-          </p>
-        </div>
-      </div>
-      <p class="faq-more reveal">
-        <a href="https://github.com/HeathTeng/Bridgeboard#隐私和安全--privacy-and-safety" target="_blank" rel="noopener">
-          <span class="zh">GitHub 上的完整说明 →</span><span class="en">Full details on GitHub →</span>
-        </a>
-        &nbsp;·&nbsp;
-        <span class="zh">有疑问写信到 <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
-        <span class="en">Questions? Write to <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
-      </p>
+      </details>
     </div>
   </section>
 
@@ -1526,6 +1487,13 @@
     revealed.forEach(function (el) { io.observe(el); });
   }
 })();
+  // Open the privacy fold when someone jumps to it
+  (function () {
+    var fold = document.getElementById('bbPrivacyFold');
+    function check() { if (location.hash === '#bb-privacy' && fold) fold.open = true; }
+    window.addEventListener('hashchange', check);
+    check();
+  })();
 </script>
 
 </body>
