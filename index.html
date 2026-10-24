@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boundly · 让表达,真实抵达 | Where expression truly arrives</title>
-<meta name="description" content="Boundly 在人与人之间架桥,把理解的路一段一段修平。第一个产品 Bridgit 正在进行中。Together with our users, we pave the road of understanding.">
+<title>Bridgeboard · Blackboard 学习面板 | Boundly</title>
+<meta name="description" content="Bridgeboard:给留学生的 Blackboard 学习面板,所有课程的截止日期一个页面看完,免费下载 Windows 版。由 Boundly 制作。Every Blackboard deadline on one page, free for Windows.">
 <style>
   /* ============ Tokens ============ */
   :root {
@@ -431,6 +431,264 @@
     flex: none;
   }
 
+  /* ============ Top nav ============ */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .top-nav {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+  }
+  .top-nav a { color: var(--ink-2); }
+
+  /* ============ Bridgeboard (first screen) ============ */
+  /* Bridgeboard keeps its own green so the page matches the app the student downloads. */
+  .bb {
+    --bb-hero: #1f3d33;
+    --bb-on-hero: #f1f7f3;
+    --bb-on-hero-muted: #bcd2c7;
+    --bb-brand: #2f8f6a;
+    --bb-accent: #297c5c;
+    --bb-soft: #e6f2ec;
+  }
+  .bb-hero {
+    background: var(--bb-hero);
+    color: var(--bb-on-hero);
+    border-radius: 26px;
+    padding: 56px 56px 0;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .bb-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+  .bb-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .bb-name .mark { width: 34px; height: 34px; flex: none; }
+  .bb-name .mark rect { fill: var(--bb-brand); }
+  .bb-name .mark path { fill: none; stroke: var(--bb-on-hero); stroke-width: 2.2; stroke-linecap: round; }
+  .bb-badge {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--bb-on-hero);
+  }
+  .bb-hero h1 {
+    margin-top: 30px;
+    font-size: clamp(30px, 5vw, 48px);
+    line-height: 1.3;
+    font-weight: 600;
+    max-width: 16em;
+    text-wrap: balance;
+  }
+  .bb-lead {
+    margin-top: 18px;
+    max-width: 34em;
+    font-size: 17px;
+    color: var(--bb-on-hero-muted);
+  }
+  .bb-actions {
+    margin-top: 34px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .bb-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: var(--bb-hero);
+    font-size: 18px;
+    font-weight: 600;
+    padding: 16px 34px;
+    border-radius: 999px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .bb-download:hover {
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  .bb-download svg { width: 20px; height: 20px; flex: none; }
+  .bb-secondary {
+    color: var(--bb-on-hero);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 14px 26px;
+    font-size: 15px;
+  }
+  .bb-secondary:hover { text-decoration: none; background: rgba(255, 255, 255, 0.08); }
+  .bb-note {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--bb-on-hero-muted);
+  }
+  .bb-not-windows {
+    display: none;
+    margin-top: 16px;
+    max-width: 34em;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: var(--bb-on-hero);
+  }
+  .bb-not-windows.show { display: block; }
+  .bb-copy {
+    margin-left: 6px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--bb-on-hero);
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 2px 12px;
+    cursor: pointer;
+  }
+  .bb-trust {
+    margin-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    font-size: 13.5px;
+    color: var(--bb-on-hero-muted);
+  }
+  .bb-trust span::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--bb-brand);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .bb-shot {
+    margin-top: 48px;
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.25);
+    line-height: 0;
+  }
+  .bb-shot img { width: 100%; height: auto; display: block; }
+  .bb-shot .phone { display: none; }
+
+  .bb-section { border-top: none; padding: 80px 0 40px; }
+  .bb-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .bb-feature {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 30px 30px 28px;
+  }
+  .bb-feature .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bb-brand);
+    margin-bottom: 16px;
+  }
+  .bb-feature h3 { font-size: 18px; font-weight: 600; color: var(--ink); }
+  .bb-feature p { margin-top: 10px; font-size: 14.5px; line-height: 1.8; }
+  .bb-colors { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .bb-colors span { font-size: 12.5px; padding: 2px 10px; border-radius: 999px; }
+  .c-red { color: #b44238; background: #fbe6e3; }
+  .c-orange { color: #a25718; background: #fcecdc; }
+  .c-blue { color: #3667b6; background: #e3ecfa; }
+  .c-yellow { color: #846711; background: #f7efd2; }
+  .c-green { color: #257850; background: #dff2e7; }
+  .bb-fit {
+    margin-top: 22px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    counter-reset: step;
+  }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 30px;
+  }
+  .step .num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bb-soft);
+    color: var(--bb-accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .step h3 { font-size: 17px; font-weight: 600; color: var(--ink); }
+  .step p { margin-top: 8px; font-size: 14.5px; line-height: 1.8; }
+  .step .warn {
+    margin-top: 14px;
+    background: #fff1dd;
+    color: #7a4100;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .faq { margin-top: 48px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); padding: 18px 4px; }
+  .faq summary {
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 600;
+    list-style-position: outside;
+  }
+  .faq details p { margin-top: 10px; font-size: 14.5px; line-height: 1.85; max-width: 46em; }
+  .faq-more { margin-top: 20px; font-size: 14px; }
+
+  .made-by {
+    padding: 70px 0 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+  .made-by .line {
+    width: 1px;
+    height: 48px;
+    background: var(--line);
+    margin: 0 auto 18px;
+  }
+
+  .badge-live { color: #fff; background: #2f8f6a; }
+  .bb-row-link { font-size: 14.5px; white-space: nowrap; }
+
+  .contact-list { margin-top: 8px; }
+
   /* ============ Footer ============ */
   footer {
     border-top: 1px solid var(--line);
@@ -470,6 +728,13 @@
     .boundary { padding: 30px 24px; }
     .road-item .badge { margin-left: 0; }
     .subscribe-form button { flex: 1 1 100%; }
+    .top-nav { display: none; }
+    .bb-hero { padding: 36px 24px 0; border-radius: 22px; }
+    .bb-download { width: 100%; justify-content: center; }
+    .bb-secondary { width: 100%; text-align: center; }
+    .bb-shot .desktop { display: none; }
+    .bb-shot .phone { display: block; }
+    .bb-features, .steps { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -481,13 +746,230 @@
       Boundly
       <small><span class="zh">纵界融语</span><span class="en">NANJING · 2026</span></small>
     </div>
+    <div class="header-right">
+    <nav class="top-nav" aria-label="页面导航">
+      <a href="#bridgeboard">Bridgeboard</a>
+      <a href="#boundly">Boundly</a>
+      <a href="#subscribe"><span class="zh">联系</span><span class="en">Contact</span></a>
+    </nav>
     <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language / 切换语言">
       <span class="zh">EN</span><span class="en">中文</span>
     </button>
+    </div>
   </div>
 </header>
 
 <main>
+
+  <!-- ============ Bridgeboard (first screen) ============ -->
+  <div class="bb wrap" id="bridgeboard">
+    <div class="bb-hero">
+      <div class="bb-name">
+        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M4 20h24M6 20q10-14 20 0M10 20v6M22 20v6M11 14.8V20M16 13V20M21 14.8V20"/></svg>
+        Bridgeboard
+        <span class="bb-badge"><span class="zh">已发布 · 免费</span><span class="en">Released · Free</span></span>
+      </div>
+      <h1>
+        <span class="zh">所有课程的截止日期，一个页面看完。</span>
+        <span class="en">Every Blackboard deadline, on one page.</span>
+      </h1>
+      <p class="bb-lead">
+        <span class="zh">给留学生的 Blackboard 学习面板。截止日期、课程文件、手机提醒、清单和课程消息都在一起，不用再一门一门课点进去找。</span>
+        <span class="en">A Blackboard study dashboard for international students. Deadlines, course files, phone alerts, a checklist and course messages in one place, instead of clicking through every course.</span>
+      </p>
+
+      <div class="bb-actions">
+        <a class="bb-download" id="bbDownload" href="https://github.com/HeathTeng/Bridgeboard/releases/latest/download/Bridgeboard-Windows.zip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          <span class="zh">下载 Windows 版</span><span class="en">Download for Windows</span>
+        </a>
+        <a class="bb-secondary" href="#bb-features">
+          <span class="zh">先看看它能做什么</span><span class="en">See what it does</span>
+        </a>
+      </div>
+      <p class="bb-note">
+        <span class="zh">约 34 MB · 解压后双击 start.bat 就能用，不用安装其他东西 · <a href="#bb-install" style="color:inherit;text-decoration:underline">三步装好</a></span>
+        <span class="en">About 34 MB · Unzip and double-click start.bat; nothing else to install · <a href="#bb-install" style="color:inherit;text-decoration:underline">Set up in 3 steps</a></span>
+      </p>
+      <p class="bb-not-windows" id="bbNotWindows" role="note">
+        <span class="zh">Bridgeboard 目前只有 Windows 版。请在你的 Windows 电脑上打开 getboundly.com 下载。</span>
+        <span class="en">Bridgeboard is Windows-only for now. Open getboundly.com on your Windows computer to download it.</span>
+        <button class="bb-copy" id="bbCopy" type="button"><span class="zh">复制网址</span><span class="en">Copy link</span></button>
+        <span id="bbCopied" aria-live="polite"></span>
+      </p>
+
+      <div class="bb-trust">
+        <span class="zh">数据只在你的电脑上，我们收不到</span><span class="en">Your data stays on your computer</span>
+        <span class="zh">只读取，不会替你提交作业</span><span class="en">Read-only: it never submits anything</span>
+        <span class="zh">不是学校官方工具</span><span class="en">Not an official school tool</span>
+      </div>
+
+      <div class="bb-shot">
+        <img class="desktop" src="assets/bridgeboard-desktop.jpg" width="1600" height="1000" alt="Bridgeboard 界面：今天要注意、截止日期、课程文件和手机提醒（示例数据）">
+        <img class="phone" src="assets/bridgeboard-phone.jpg" width="780" height="1100" alt="Bridgeboard 在窄屏上的样子（示例数据）">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Bridgeboard features ============ -->
+  <section class="bb bb-section" id="bb-features">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>
+          <span class="zh">装上以后，它帮你做这些</span>
+          <span class="en">What it does for you</span>
+        </h2>
+      </div>
+      <div class="bb-features reveal">
+        <div class="bb-feature">
+          <div class="dot" aria-hidden="true"></div>
+          <h3><span class="zh">五种颜色的截止提醒</span><span class="en">Deadlines in five colours</span></h3>
+          <p>
+            <span class="zh">所有课程的作业按颜色排好，一眼看出哪个最急。点作业名直接打开 Blackboard 的作业页。</span>
+            <span class="en">Every assignment from every course, sorted by colour so the urgent one stands out. Click a title to open it in Blackboard.</span>
+          </p>
+          <div class="bb-colors" aria-hidden="true">
+            <span class="c-red"><span class="zh">逾期</span><span class="en">Overdue</span></span>
+            <span class="c-orange"><span class="zh">临期</span><span class="en">Due soon</span></span>
+            <span class="c-blue"><span class="zh">刚开放</span><span class="en">Just opened</span></span>
+            <span class="c-yellow"><span class="zh">还有时间</span><span class="en">Time left</span></span>
+            <span class="c-green"><span class="zh">已完成</span><span class="en">Done</span></span>
+          </div>
+        </div>
+        <div class="bb-feature">
+          <div class="dot" aria-hidden="true"></div>
+          <h3><span class="zh">课程文件一键下载</span><span class="en">Course files in one click</span></h3>
+          <p>
+            <span class="zh">勾选课程，选一个文件夹（U 盘也行），课件按课程自动整理好。已经下过的会跳过，还能顺便导出给 AI 用的文字版。</span>
+            <span class="en">Tick the courses, pick a folder (a USB drive works too) and the files arrive sorted by course. Files you already have are skipped, and you can export a text copy for AI tools.</span>
+          </p>
+        </div>
+        <div class="bb-feature">
+          <div class="dot" aria-hidden="true"></div>
+          <h3><span class="zh">快到期时提醒到手机</span><span class="en">Alerts on your phone</span></h3>
+          <p>
+            <span class="zh">iPhone 用 Bark，安卓用 ntfy。默认关闭，你自己打开、测试成功后才会发。也可以导出到手机日历，电脑关机时也会提醒。</span>
+            <span class="en">Bark on iPhone, ntfy on Android. Off by default; it only sends after you switch it on and a test reaches your phone. You can also export deadlines to your phone's calendar.</span>
+          </p>
+        </div>
+        <div class="bb-feature">
+          <div class="dot" aria-hidden="true"></div>
+          <h3><span class="zh">清单和课程消息</span><span class="en">Checklist and course messages</span></h3>
+          <p>
+            <span class="zh">作业自动进清单，交了自动打勾，也能加自己的待办。老师和同学发的课程消息集中在一处，未读的会标出来。</span>
+            <span class="en">Assignments join your checklist and tick themselves when submitted; add your own to-dos too. Course messages from every course in one list, unread ones marked.</span>
+          </p>
+        </div>
+      </div>
+      <p class="bb-fit reveal">
+        <span class="zh">适用于使用 Blackboard Learn Ultra 的学校：登录后网址里有 <code>/ultra</code> 就是。</span>
+        <span class="en">Works with schools on Blackboard Learn Ultra: if the address has <code>/ultra</code> after you sign in, you're set.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Bridgeboard install ============ -->
+  <section class="bb bb-section" id="bb-install">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>
+          <span class="zh">三步装好</span>
+          <span class="en">Set up in three steps</span>
+        </h2>
+      </div>
+      <div class="steps reveal">
+        <div class="step">
+          <div class="num">1</div>
+          <h3><span class="zh">下载</span><span class="en">Download</span></h3>
+          <p>
+            <span class="zh">点上面的「下载 Windows 版」。</span>
+            <span class="en">Click "Download for Windows" above.</span>
+          </p>
+          <p class="warn">
+            <span class="zh">浏览器如果说「不常下载」，点「保留」。</span>
+            <span class="en">If your browser says it's not commonly downloaded, choose "Keep".</span>
+          </p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3><span class="zh">先解压</span><span class="en">Unzip first</span></h3>
+          <p>
+            <span class="zh">右键压缩包，选「全部解压缩」，放到任意文件夹或 U 盘。</span>
+            <span class="en">Right-click the zip and choose "Extract All", into any folder or a USB drive.</span>
+          </p>
+          <p class="warn">
+            <span class="zh">一定要先解压。直接在压缩包里双击是用不了的。</span>
+            <span class="en">Unzip first. Double-clicking inside the zip won't work.</span>
+          </p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3><span class="zh">双击 start.bat</span><span class="en">Double-click start.bat</span></h3>
+          <p>
+            <span class="zh">会出现一个黑色窗口，用的时候别关它。面板会在浏览器里打开，按提示登录学校账号。</span>
+            <span class="en">A black window opens; keep it open while you use Bridgeboard. The dashboard opens in your browser; sign in to your school account.</span>
+          </p>
+          <p class="warn">
+            <span class="zh">Windows 提示「已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>
+            <span class="en">If Windows says "Windows protected your PC", click "More info", then "Run anyway".</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="faq reveal">
+        <details>
+          <summary><span class="zh">要钱吗？</span><span class="en">Does it cost anything?</span></summary>
+          <p>
+            <span class="zh">不要。现在的所有功能都免费，代码公开在 GitHub 上。</span>
+            <span class="en">No. Every current feature is free, and the code is public on GitHub.</span>
+          </p>
+        </details>
+        <details>
+          <summary><span class="zh">我的学校账号和密码安全吗？</span><span class="en">Is my school login safe?</span></summary>
+          <p>
+            <span class="zh">登录是在学校自己的网页上完成的，Bridgeboard 看不到你的密码。登录信息和课程数据只存在你自己的电脑上，不会发给我们。唯一的例外是你自己打开的手机提醒：作业名和截止时间会经过 Bark 或 ntfy 发到你的手机。</span>
+            <span class="en">You sign in on your school's own page, so Bridgeboard never sees your password. Your login and course data stay on your computer and never reach us. The one exception is phone alerts, if you switch them on: assignment names and due times pass through Bark or ntfy to your phone.</span>
+          </p>
+        </details>
+        <details>
+          <summary><span class="zh">用 Mac 能用吗？</span><span class="en">Does it work on a Mac?</span></summary>
+          <p>
+            <span class="zh">目前只有 Windows 版。</span>
+            <span class="en">Not yet; it's Windows-only for now.</span>
+          </p>
+        </details>
+        <details>
+          <summary><span class="zh">那个黑色窗口能关吗？</span><span class="en">Can I close the black window?</span></summary>
+          <p>
+            <span class="zh">用的时候别关，关掉它面板和手机提醒都会停。用完可以关，下次再双击 start.bat 就行。</span>
+            <span class="en">Not while you're using it: closing it stops the dashboard and phone alerts. Close it when you're done and double-click start.bat next time.</span>
+          </p>
+        </details>
+        <details>
+          <summary><span class="zh">有新版本了怎么升级？</span><span class="en">How do I update?</span></summary>
+          <p>
+            <span class="zh">回到这里重新下载，解压到任意位置就行。你的清单、设置和登录都会自动保留。</span>
+            <span class="en">Download again from here and unzip anywhere. Your checklist, settings and sign-in are kept automatically.</span>
+          </p>
+        </details>
+        <p class="faq-more">
+          <a href="https://github.com/HeathTeng/Bridgeboard/blob/main/docs/FAQ.md" target="_blank" rel="noopener">
+            <span class="zh">全部常见问题 →</span><span class="en">All questions →</span>
+          </a>
+          &nbsp;·&nbsp;
+          <span class="zh">遇到问题写信到 <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
+          <span class="en">Stuck? Write to <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Made by Boundly ============ -->
+  <div class="made-by" id="boundly">
+    <div class="line" aria-hidden="true"></div>
+    <span class="zh">Bridgeboard 由 Boundly 制作</span>
+    <span class="en">BRIDGEBOARD IS MADE BY BOUNDLY</span>
+  </div>
 
   <!-- ============ Hero ============ -->
   <div class="hero wrap">
@@ -518,8 +1000,8 @@
           <span class="en">What we're building</span>
         </h2>
         <p>
-          <span class="zh">Boundly 的所有产品,本质上都是同一种东西:摩擦消除器。第一座桥,已经在建。</span>
-          <span class="en">Every Boundly product is, at heart, the same thing: a friction remover. The first bridge is under construction.</span>
+          <span class="zh">Boundly 的所有产品,本质上都是同一种东西:摩擦消除器。Bridgeboard 已经能用,Bridgit 正在建。</span>
+          <span class="en">Every Boundly product is, at heart, the same thing: a friction remover. Bridgeboard is ready to use; Bridgit is under construction.</span>
         </p>
       </div>
 
@@ -599,8 +1081,19 @@
         </div>
       </div>
 
-      <!-- On the road -->
+      <!-- Released, then on the road -->
       <div class="road-list reveal">
+        <div class="road-item">
+          <span class="road-name">Bridgeboard</span>
+          <span class="road-desc">
+            <span class="zh">学生 ↔ 学校系统 · 把 Blackboard 上散落在各门课里的截止日期和消息，放到一个看得懂的页面上。 <a class="bb-row-link" href="#bridgeboard">下载 →</a></span>
+            <span class="en">Students ↔ school systems · Gathers the deadlines and messages scattered across Blackboard courses onto one page you can read at a glance. <a class="bb-row-link" href="#bridgeboard">Download →</a></span>
+          </span>
+          <span class="badge badge-live">
+            <span class="zh">已发布</span>
+            <span class="en">Released</span>
+          </span>
+        </div>
         <div class="road-item">
           <span class="road-name">
             <span class="zh">法律工具</span>
@@ -708,8 +1201,8 @@
             <span class="en">Stay in touch</span>
           </h2>
           <p>
-            <span class="zh">留下邮箱,有值得说的进展时,我们会写信告诉你。不催促,不轰炸,随时可以退订。</span>
-            <span class="en">Leave your email, and we'll write when there's something worth telling. No urgency, no noise — unsubscribe anytime.</span>
+            <span class="zh">想在 Bridgeboard 出新版、或 Boundly 有新产品时收到一封信？点下面的按钮，会打开你的邮件程序，发出这封信就算订阅好了。只用来通知新版本和新产品，不卖、不乱发，回信说「退订」就停。</span>
+            <span class="en">Want a note when Bridgeboard updates or Boundly ships something new? The button opens your email app; send that message and you're subscribed. Used only for release and product news, never sold, and a reply saying "unsubscribe" stops it.</span>
           </p>
         </div>
 
@@ -717,8 +1210,8 @@
           <input type="email" id="emailInput" name="email" autocomplete="email"
                  placeholder="you@example.com" aria-label="Email / 邮箱">
           <button type="submit">
-            <span class="zh">订阅</span>
-            <span class="en">Subscribe</span>
+            <span class="zh">写信订阅</span>
+            <span class="en">Subscribe by email</span>
           </button>
           <p class="form-error" id="formError" role="alert">
             <span class="zh">请输入有效的邮箱地址。</span>
@@ -729,8 +1222,8 @@
         <div class="form-done" id="formDone" role="status">
           <span class="point" aria-hidden="true"></span>
           <span>
-            <span class="zh">已收到,我们会保持联系。</span>
-            <span class="en">Received. We'll keep in touch.</span>
+            <span class="zh">邮件程序应该已经打开了。发出那封信就订阅好了。没有打开的话，直接写信到 letters@getboundly.com。</span>
+            <span class="en">Your email app should have opened. Send that message and you're subscribed. If nothing opened, write to letters@getboundly.com.</span>
           </span>
         </div>
       </div>
@@ -749,6 +1242,12 @@
     <p>
       <span class="zh">纵界融语网络科技有限公司 · Boundly · 南京 · 2026</span>
       <span class="en">Boundly · Nanjing · 2026</span>
+    </p>
+    <p class="contact-list">
+      <span class="zh">联系我们</span><span class="en">Contact</span>:
+      <a href="mailto:hello@getboundly.com">hello@getboundly.com</a>
+      · <span class="zh">Bridgeboard 反馈</span><span class="en">Bridgeboard feedback</span>:
+      <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a>
     </p>
     <p>getboundly.com</p>
   </div>
@@ -774,7 +1273,25 @@
     applyLang(root.getAttribute('data-lang') === 'zh' ? 'en' : 'zh');
   });
 
-  /* ---------- Subscribe form (front-end only; Resend backend comes later) ---------- */
+  /* ---------- Bridgeboard: Windows-only download ---------- */
+  var ua = navigator.userAgent || '';
+  var isWindows = /Windows/i.test(ua) && !/Windows Phone/i.test(ua);
+  if (!isWindows) document.getElementById('bbNotWindows').classList.add('show');
+  var copyBtn = document.getElementById('bbCopy');
+  var copied = document.getElementById('bbCopied');
+  copyBtn.addEventListener('click', function () {
+    var zh = root.getAttribute('data-lang') === 'zh';
+    function ok() { copied.textContent = zh ? ' 已复制' : ' Copied'; }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText('https://getboundly.com').then(ok, function () {
+        copied.textContent = ' getboundly.com';
+      });
+    } else {
+      copied.textContent = ' getboundly.com';
+    }
+  });
+
+  /* ---------- Subscribe form (opens a mail to letters@ until a signup service exists) ---------- */
   var form = document.getElementById('subscribeForm');
   var input = document.getElementById('emailInput');
   var error = document.getElementById('formError');
@@ -790,6 +1307,10 @@
       return;
     }
     error.classList.remove('show');
+    var zh = root.getAttribute('data-lang') === 'zh';
+    var subject = zh ? '订阅 Boundly 新产品通知' : 'Subscribe to Boundly news';
+    var body = (zh ? '请把新版本和新产品的消息发到这个邮箱：' : 'Please send release and product news to: ') + email;
+    window.location.href = 'mailto:letters@getboundly.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     form.style.display = 'none';
     done.classList.add('show');
   });
