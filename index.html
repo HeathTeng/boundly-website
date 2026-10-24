@@ -67,7 +67,7 @@
   }
   .wordmark {
     font-family: var(--serif);
-    font-size: 22px;
+    font-size: 28px;
     letter-spacing: 0.02em;
     color: var(--ink);
     font-weight: 400;
@@ -458,14 +458,15 @@
     background: var(--bb-hero);
     color: var(--bb-on-hero);
     border-radius: 26px;
-    padding: 56px 56px 0;
+    padding: 52px 48px;
     overflow: hidden;
     margin-top: 8px;
   }
   .bb-hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 40px;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 44px;
+    align-items: center;
   }
   .bb-name {
     display: flex;
@@ -489,7 +490,7 @@
   }
   .bb-hero h1 {
     margin-top: 30px;
-    font-size: clamp(30px, 5vw, 48px);
+    font-size: clamp(28px, 3.4vw, 40px);
     line-height: 1.3;
     font-weight: 600;
     max-width: 16em;
@@ -578,15 +579,65 @@
     margin-right: 8px;
     vertical-align: middle;
   }
-  .bb-shot {
-    margin-top: 48px;
-    border-radius: 18px 18px 0 0;
-    overflow: hidden;
-    box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.25);
-    line-height: 0;
+  .carousel { min-width: 0; }
+  .track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: 18px;
+    background: #f2f6f3;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
   }
-  .bb-shot img { width: 100%; height: auto; display: block; }
-  .bb-shot .phone { display: none; }
+  .track::-webkit-scrollbar { display: none; }
+  .track:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+  .slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    margin: 0;
+  }
+  .slide img { width: 100%; height: auto; display: block; }
+  .slide figcaption {
+    padding: 12px 18px 14px;
+    font-size: 14px;
+    color: #15291f;
+    background: #fff;
+  }
+  .car-controls {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .car-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: none;
+    color: var(--bb-on-hero);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .car-btn:hover { background: rgba(255, 255, 255, 0.1); }
+  .dots { display: flex; gap: 8px; }
+  .dots .dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: width 0.25s, background 0.25s;
+  }
+  .dots .dot[aria-current="true"] { width: 22px; background: #fff; }
+  .car-note { margin-top: 8px; text-align: center; font-size: 12px; color: var(--bb-on-hero-muted); }
+  @media (max-width: 960px) {
+    .bb-hero-grid { grid-template-columns: minmax(0, 1fr); }
+  }
 
   .bb-section { border-top: none; padding: 80px 0 40px; }
   .bb-features {
@@ -729,11 +780,9 @@
     .road-item .badge { margin-left: 0; }
     .subscribe-form button { flex: 1 1 100%; }
     .top-nav { display: none; }
-    .bb-hero { padding: 36px 24px 0; border-radius: 22px; }
+    .bb-hero { padding: 36px 20px 28px; border-radius: 22px; }
     .bb-download { width: 100%; justify-content: center; }
     .bb-secondary { width: 100%; text-align: center; }
-    .bb-shot .desktop { display: none; }
-    .bb-shot .phone { display: block; }
     .bb-features, .steps { grid-template-columns: 1fr; }
   }
 </style>
@@ -744,7 +793,7 @@
   <div class="header-inner">
     <div class="wordmark">
       Boundly
-      <small><span class="zh">纵界融语</span><span class="en">NANJING · 2026</span></small>
+      <small><span class="zh">纵界融语 · 让表达，真实抵达</span><span class="en">Where expression truly arrives</span></small>
     </div>
     <div class="header-right">
     <nav class="top-nav" aria-label="页面导航">
@@ -764,13 +813,15 @@
   <!-- ============ Bridgeboard (first screen) ============ -->
   <div class="bb wrap" id="bridgeboard">
     <div class="bb-hero">
+      <div class="bb-hero-grid">
+      <div class="bb-text">
       <div class="bb-name">
         <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M4 20h24M6 20q10-14 20 0M10 20v6M22 20v6M11 14.8V20M16 13V20M21 14.8V20"/></svg>
         Bridgeboard
         <span class="bb-badge"><span class="zh">已发布 · 免费</span><span class="en">Released · Free</span></span>
       </div>
       <h1>
-        <span class="zh">所有课程的截止日期，一个页面看完。</span>
+        <span class="zh">所有课程的截止日期，<br>一个页面看完。</span>
         <span class="en">Every Blackboard deadline, on one page.</span>
       </h1>
       <p class="bb-lead">
@@ -804,9 +855,37 @@
         <span class="zh">不是学校官方工具</span><span class="en">Not an official school tool</span>
       </div>
 
-      <div class="bb-shot">
-        <img class="desktop" src="assets/bridgeboard-desktop.jpg" width="1600" height="1000" alt="Bridgeboard 界面：今天要注意、截止日期、课程文件和手机提醒（示例数据）">
-        <img class="phone" src="assets/bridgeboard-phone.jpg" width="780" height="1100" alt="Bridgeboard 在窄屏上的样子（示例数据）">
+      </div>
+      <div class="carousel" id="bbCarousel" aria-roledescription="carousel" aria-label="Bridgeboard 截图 / screenshots">
+        <div class="track" id="bbTrack" tabindex="0">
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="1 / 5">
+            <img src="assets/slide-overview.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：一个页面看全：今天要注意的事、截止日期、课程文件、手机提醒">
+            <figcaption><span class="zh">一个页面看全：今天要注意的事、截止日期、课程文件、手机提醒</span><span class="en">Everything on one page: today's alerts, deadlines, files and phone alerts</span></figcaption>
+          </figure>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="2 / 5">
+            <img src="assets/slide-deadlines.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：截止日期按五种颜色排好，最急的在最上面" loading="lazy">
+            <figcaption><span class="zh">截止日期按五种颜色排好，最急的在最上面</span><span class="en">Deadlines sorted by colour, the most urgent first</span></figcaption>
+          </figure>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="3 / 5">
+            <img src="assets/slide-files.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：勾选课程，课件按课程自动下载整理好" loading="lazy">
+            <figcaption><span class="zh">勾选课程，课件按课程自动下载整理好</span><span class="en">Tick your courses and the files download, sorted by course</span></figcaption>
+          </figure>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="4 / 5">
+            <img src="assets/slide-alerts.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：快到期时提醒到你的手机（iPhone / 安卓）" loading="lazy">
+            <figcaption><span class="zh">快到期时提醒到你的手机（iPhone / 安卓）</span><span class="en">Alerts on your phone before things are due</span></figcaption>
+          </figure>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="5 / 5">
+            <img src="assets/slide-checklist.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：作业自动进清单，交了自动打勾" loading="lazy">
+            <figcaption><span class="zh">作业自动进清单，交了自动打勾</span><span class="en">Assignments join your checklist and tick themselves when submitted</span></figcaption>
+          </figure>
+        </div>
+        <div class="car-controls">
+          <button type="button" class="car-btn" id="bbPrev" aria-label="上一张 / previous">‹</button>
+          <div class="dots" id="bbDots"><button type="button" class="dot" aria-label="第 1 张 / slide 1"></button><button type="button" class="dot" aria-label="第 2 张 / slide 2"></button><button type="button" class="dot" aria-label="第 3 张 / slide 3"></button><button type="button" class="dot" aria-label="第 4 张 / slide 4"></button><button type="button" class="dot" aria-label="第 5 张 / slide 5"></button></div>
+          <button type="button" class="car-btn" id="bbNext" aria-label="下一张 / next">›</button>
+        </div>
+        <p class="car-note"><span class="zh">截图来自示例模式，不是真实账号</span><span class="en">Screenshots use demo data</span></p>
+      </div>
       </div>
     </div>
   </div>
@@ -1272,6 +1351,40 @@
   toggle.addEventListener('click', function () {
     applyLang(root.getAttribute('data-lang') === 'zh' ? 'en' : 'zh');
   });
+
+  /* ---------- Bridgeboard screenshots: slides by hand, turns gently on its own ---------- */
+  var track = document.getElementById('bbTrack');
+  var slides = track.querySelectorAll('.slide');
+  var dots = document.querySelectorAll('#bbDots .dot');
+  var current = 0;
+  function show(i) {
+    current = (i + slides.length) % slides.length;
+    track.scrollTo({ left: current * track.clientWidth, behavior: reducedMotion() ? 'auto' : 'smooth' });
+  }
+  function reducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function mark() {
+    var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+    current = i;
+    dots.forEach(function (d, k) { d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+  }
+  dots.forEach(function (d, k) { d.addEventListener('click', function () { stop(); show(k); }); });
+  document.getElementById('bbPrev').addEventListener('click', function () { stop(); show(current - 1); });
+  document.getElementById('bbNext').addEventListener('click', function () { stop(); show(current + 1); });
+  track.addEventListener('scroll', function () { window.requestAnimationFrame(mark); });
+  track.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); stop(); show(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); stop(); show(current - 1); }
+  });
+  var timer = null;
+  function start() { if (!reducedMotion() && !timer) timer = setInterval(function () { show(current + 1); }, 5000); }
+  function stop() { clearInterval(timer); timer = null; }
+  var carousel = document.getElementById('bbCarousel');
+  carousel.addEventListener('mouseenter', stop);
+  carousel.addEventListener('mouseleave', start);
+  carousel.addEventListener('focusin', stop);
+  track.addEventListener('touchstart', stop, { passive: true });
+  mark();
+  start();
 
   /* ---------- Bridgeboard: Windows-only download ---------- */
   var ua = navigator.userAgent || '';
