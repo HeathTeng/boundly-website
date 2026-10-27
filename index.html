@@ -3,26 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bridgeboard · Blackboard 学习面板 | Boundly</title>
-<meta name="description" content="Bridgeboard:给留学生的 Blackboard 学习面板,所有课程的截止日期一个页面看完,免费下载 Windows 版。由 Boundly 制作。Every Blackboard deadline on one page, free for Windows.">
+<title>Bridgeboard · 你的专属 Blackboard 看板 | Boundly</title>
+<meta name="description" content="Bridgeboard：你的专属 Blackboard 看板。截止提醒、文件下载、手机提醒、清单、消息、公告、成绩，一个页面看完，免费下载 Windows 版。由 Boundly 制作。Your personal Blackboard dashboard, free for Windows.">
+<meta name="theme-color" content="#f2f6f3">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="3c00e99c-64aa-47f9-b815-0ec1c84761ea"></script>
 <style>
   /* ============ Tokens ============ */
+  /* One look for the whole site, taken from the Bridgeboard app: pale green page,
+     faint light spots, dark green only in the Bridgeboard card, round glass cards. */
   :root {
-    --ink:        #1A2A3A;  /* 主色 · deep blue-gray */
-    --ink-2:      #2E4057;  /* 副色 */
-    --accent:     #3D5A80;  /* 强调 */
-    --muted:      #5B7C99;  /* 辅助 */
-    --body:       #333333;  /* 正文 */
-    --bg:         #F7F9FB;  /* 冷调近白 */
-    --card:       #FFFFFF;
-    --line:       #DDE5EC;
-    --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+    --bg: #f2f6f3;
+    --blob-1: #bfe6d3; --blob-2: #d7ecc9; --blob-3: #f6dccb;
+    --hero: #1f3d33; --on-hero: #f1f7f3; --on-hero-muted: #bcd2c7;
+    --glass: rgba(255, 255, 255, .62); --glass-line: rgba(255, 255, 255, .85); --solid: #fbfdfc;
+    --shadow: 0 12px 32px rgba(31, 61, 51, .08), 0 2px 6px rgba(31, 61, 51, .04);
+    --ink: #15291f;      /* headings and main text */
+    --body: #24392f;     /* long text */
+    --muted: #4f6b5e;
+    --line: rgba(31, 61, 51, .1);
+    --accent: #297c5c;   /* text-safe green: links, filled buttons */
+    --brand: #2f8f6a;    /* dots and marks */
+    --accent-soft: rgba(47, 143, 106, .13);
+    --warn-bg: #fff1dd; --warn-text: #7a4100;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    --r-card: 26px; --r-row: 18px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 96px; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
@@ -34,6 +43,20 @@
     line-height: 1.75;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* three faint fixed light spots, like the app */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(38vw 38vw at 6% 4%, var(--blob-1), transparent 70%),
+      radial-gradient(34vw 34vw at 96% 30%, var(--blob-2), transparent 70%),
+      radial-gradient(30vw 30vw at 40% 104%, var(--blob-3), transparent 70%);
+    opacity: .75;
   }
 
   /* ============ Language switching ============ */
@@ -42,7 +65,7 @@
 
   /* ============ Layout ============ */
   .wrap {
-    max-width: 1020px;
+    max-width: 1120px;
     margin: 0 auto;
     padding: 0 24px;
   }
@@ -53,459 +76,206 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: 6px;
+  }
+
+  /* Glass card: falls back to a solid card without backdrop-filter or when less transparency is asked for */
+  .glass {
+    background: var(--solid);
+    border: 1px solid var(--glass-line);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow);
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass {
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(18px) saturate(1.2);
+      backdrop-filter: blur(18px) saturate(1.2);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass { background: var(--solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+
+  /* small press animation */
+  @media (prefers-reduced-motion: no-preference) {
+    .press { transition: transform .12s ease, box-shadow .15s ease, background .15s ease; }
+    .press:active { transform: scale(.97); }
   }
 
   /* ============ Header ============ */
-  header {
-    padding: 28px 0;
+  .site-head {
+    position: sticky;
+    top: 12px;
+    z-index: 20;
+    margin-top: 12px;
   }
   .header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
+    padding: 10px 12px 10px 22px;
+    border-radius: 999px;
   }
   .wordmark {
-    font-family: var(--serif);
-    font-size: 28px;
-    letter-spacing: 0.02em;
-    color: var(--ink);
-    font-weight: 400;
-  }
-  .wordmark small {
-    display: block;
-    font-family: var(--sans);
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .lang-toggle {
-    font-family: var(--sans);
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    color: var(--ink-2);
-    background: none;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 7px 18px;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .lang-toggle:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  /* ============ Hero ============ */
-  .hero {
-    padding-top: 110px;
-    padding-bottom: 130px;
-    text-align: left;
-  }
-  .hero .eyebrow {
-    font-size: 13px;
-    letter-spacing: 0.28em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 34px;
-  }
-  .hero h1 {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(34px, 6vw, 58px);
-    line-height: 1.35;
-    color: var(--ink);
-    letter-spacing: 0.01em;
-    max-width: 15em;
-  }
-  .hero .mission {
-    margin-top: 40px;
-    max-width: 34em;
-    font-size: 17px;
-    color: var(--ink-2);
-  }
-
-  /* 抵达线 · the arrival line — a line that travels, then arrives at a point */
-  .arrival {
-    display: flex;
-    align-items: center;
-    margin-top: 56px;
-    height: 7px;
-  }
-  .arrival .path {
-    height: 1px;
-    background: var(--muted);
-    width: 180px;
-  }
-  .arrival .point {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-left: 10px;
-    flex: none;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .arrival .path {
-      width: 0;
-      animation: travel 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
-    }
-    .arrival .point {
-      opacity: 0;
-      animation: arrive 0.5s ease 1.6s forwards;
-    }
-    @keyframes travel { to { width: 180px; } }
-    @keyframes arrive { to { opacity: 1; } }
-  }
-
-  /* ============ Sections ============ */
-  section {
-    padding: 90px 0;
-    border-top: 1px solid var(--line);
-  }
-  .section-head {
-    margin-bottom: 56px;
-  }
-  .section-head h2 {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(24px, 3.4vw, 32px);
-    color: var(--ink);
-    line-height: 1.4;
-  }
-  .section-head p {
-    margin-top: 14px;
-    color: var(--muted);
-    font-size: 15px;
-    max-width: 36em;
-  }
-
-  /* ============ Product: Bridgit ============ */
-  .product-card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 48px;
-  }
-  .product-top {
     display: flex;
     align-items: baseline;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .product-name {
-    font-family: var(--serif);
-    font-size: 34px;
-    font-weight: 400;
+    gap: 12px;
     color: var(--ink);
-    line-height: 1.2;
-  }
-  .badge {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    padding: 4px 14px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .badge-building {
-    color: #fff;
-    background: var(--accent);
-  }
-  .badge-road {
-    color: var(--muted);
-    border: 1px solid var(--line);
-    background: none;
-  }
-  .product-dim {
-    font-size: 13px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-  }
-  .product-tagline {
-    margin-top: 22px;
-    font-size: 18px;
-    color: var(--ink-2);
-    max-width: 32em;
-    line-height: 1.7;
-  }
-  .concepts {
-    margin-top: 48px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-  }
-  .proto-row {
-    margin-top: 44px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .proto-link {
-    display: inline-block;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    border-radius: 8px;
-    padding: 9px 24px;
-    font-size: 14.5px;
-    transition: background 0.2s, color 0.2s;
-  }
-  .proto-link:hover {
-    background: var(--accent);
-    color: #fff;
     text-decoration: none;
+    min-width: 0;
   }
-  .proto-note {
-    font-size: 12.5px;
-    color: var(--muted);
-  }
-  .concept .concept-line {
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-    margin-bottom: 20px;
-  }
-  .concept h3 {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 1.5;
-  }
-  .concept .concept-en {
+  .wordmark:hover { text-decoration: none; }
+  .wordmark b { font-size: 21px; font-weight: 700; letter-spacing: .01em; }
+  .wordmark small {
     font-size: 12px;
-    letter-spacing: 0.06em;
+    letter-spacing: .12em;
     color: var(--muted);
-    margin-top: 2px;
-  }
-  .concept p {
-    margin-top: 14px;
-    font-size: 14.5px;
-    color: var(--body);
-    line-height: 1.85;
-  }
-
-  /* ============ On the road ============ */
-  .road-list {
-    margin-top: 48px;
-    border-top: 1px solid var(--line);
-  }
-  .road-item {
-    display: flex;
-    align-items: baseline;
-    gap: 20px;
-    padding: 30px 4px;
-    border-bottom: 1px solid var(--line);
-    flex-wrap: wrap;
-  }
-  .road-item .road-name {
-    font-family: var(--serif);
-    font-size: 21px;
-    color: var(--ink);
-    flex: none;
-  }
-  .road-item .road-desc {
-    font-size: 14.5px;
-    color: var(--body);
-    flex: 1 1 20em;
-  }
-  .road-item .badge { margin-left: auto; }
-
-  /* ============ Boundaries ============ */
-  .boundaries {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
-    border-radius: 14px;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .boundary {
-    background: var(--card);
-    padding: 40px 36px;
-  }
-  .boundary h3 {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: 21px;
-    color: var(--ink);
-  }
-  .boundary .b-en {
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-  .boundary p {
-    margin-top: 14px;
-    font-size: 14.5px;
-    line-height: 1.85;
-  }
-
-  /* ============ Door quote ============ */
-  .door {
-    text-align: center;
-    padding: 130px 0;
-  }
-  .door blockquote {
-    font-family: var(--serif);
-    font-size: clamp(24px, 4vw, 36px);
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.6;
-  }
-  .door .door-sub {
-    margin-top: 18px;
-    font-family: var(--serif);
-    font-size: 17px;
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  /* ============ Subscribe ============ */
-  .subscribe-box {
-    max-width: 560px;
-  }
-  .subscribe-form {
-    display: flex;
-    gap: 12px;
-    margin-top: 32px;
-    flex-wrap: wrap;
-  }
-  .subscribe-form input[type="email"] {
-    flex: 1 1 240px;
-    font-family: var(--sans);
-    font-size: 15px;
-    color: var(--ink);
-    padding: 13px 18px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--card);
-    transition: border-color 0.2s;
-  }
-  .subscribe-form input[type="email"]::placeholder { color: var(--muted); }
-  .subscribe-form input[type="email"]:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-  .subscribe-form button {
-    font-family: var(--sans);
-    font-size: 15px;
-    color: #fff;
-    background: var(--ink);
-    border: none;
-    border-radius: 8px;
-    padding: 13px 32px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .subscribe-form button:hover { background: var(--accent); }
-  .form-note {
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--muted);
-    width: 100%;
-  }
-  .form-error {
-    margin-top: 10px;
-    font-size: 13.5px;
-    color: var(--ink-2);
-    display: none;
-  }
-  .form-error.show { display: block; }
-  .form-done {
-    margin-top: 32px;
-    display: none;
-    align-items: center;
-    gap: 12px;
-    font-size: 16px;
-    color: var(--ink);
-  }
-  .form-done.show { display: flex; }
-  .form-done .point {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex: none;
-  }
-
-  /* ============ Top nav ============ */
   .header-right {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 6px;
+    flex: none;
   }
-  .top-nav {
-    display: flex;
-    gap: 22px;
-    font-size: 14px;
+  .top-nav { display: flex; gap: 2px; font-size: 14px; }
+  .top-nav a {
+    color: var(--body);
+    padding: 7px 14px;
+    border-radius: 999px;
   }
-  .top-nav a { color: var(--ink-2); }
+  .top-nav a:hover { background: var(--accent-soft); color: var(--accent); text-decoration: none; }
+  .lang-toggle {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: none;
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  .lang-toggle:hover { background: rgba(47, 143, 106, .2); }
+
+  /* ============ Sections ============ */
+  section { padding: 84px 0 0; }
+  .section-head { margin-bottom: 32px; }
+  .section-head h2 {
+    font-weight: 700;
+    font-size: clamp(24px, 3.2vw, 32px);
+    color: var(--ink);
+    line-height: 1.35;
+    letter-spacing: .01em;
+  }
+  .section-head p {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 15.5px;
+    max-width: 40em;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    letter-spacing: .18em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+  }
 
   /* ============ Bridgeboard (first screen) ============ */
-  /* Bridgeboard keeps its own green so the page matches the app the student downloads. */
-  .bb {
-    --bb-hero: #1f3d33;
-    --bb-on-hero: #f1f7f3;
-    --bb-on-hero-muted: #bcd2c7;
-    --bb-brand: #2f8f6a;
-    --bb-accent: #297c5c;
-    --bb-soft: #e6f2ec;
-  }
   .bb-hero {
-    background: var(--bb-hero);
-    color: var(--bb-on-hero);
-    border-radius: 26px;
-    padding: 52px 48px;
+    position: relative;
+    background: var(--hero);
+    color: var(--on-hero);
+    border-radius: var(--r-card);
+    padding: 48px 44px 40px;
+    margin-top: 22px;
     overflow: hidden;
-    margin-top: 8px;
+    box-shadow: 0 24px 60px rgba(31, 61, 51, .22);
+  }
+  .bb-hero::before {
+    content: "";
+    position: absolute;
+    inset: auto -20% -60% auto;
+    width: 70%;
+    height: 120%;
+    background: radial-gradient(closest-side, rgba(92, 201, 156, .22), transparent);
+    pointer-events: none;
   }
   .bb-hero-grid {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: 44px;
     align-items: center;
   }
   .bb-name {
     display: flex;
     align-items: center;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 10px 12px;
     font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    font-weight: 700;
+    letter-spacing: .01em;
   }
-  .bb-name .mark { width: 34px; height: 34px; flex: none; }
-  .bb-name .mark rect { fill: var(--bb-brand); }
-  .bb-name .mark path { fill: none; stroke: var(--bb-on-hero); stroke-width: 2.2; stroke-linecap: round; }
+  .bb-name .mark { width: 36px; height: 36px; flex: none; }
+  .bb-name .mark rect { fill: var(--brand); }
+  .bb-name .mark path { fill: none; stroke: var(--on-hero); stroke-width: 2.2; stroke-linecap: round; }
   .bb-badge {
     font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.08em;
+    font-weight: 500;
+    letter-spacing: .06em;
     padding: 3px 12px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.14);
-    color: var(--bb-on-hero);
+    background: rgba(255, 255, 255, .14);
+    color: var(--on-hero);
   }
   .bb-hero h1 {
-    margin-top: 30px;
-    font-size: clamp(28px, 3.4vw, 40px);
-    line-height: 1.3;
-    font-weight: 600;
-    max-width: 16em;
-    text-wrap: balance;
+    margin-top: 26px;
+    font-size: clamp(30px, 3.8vw, 44px);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: .01em;
+  }
+  .bb-hero .h1-sub {
+    margin-top: 6px;
+    font-size: 15px;
+    letter-spacing: .04em;
+    color: var(--on-hero-muted);
+  }
+  .bb-chips {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+  }
+  .bb-chips li {
+    font-size: 13.5px;
+    padding: 4px 13px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .16);
+    color: var(--on-hero);
   }
   .bb-lead {
     margin-top: 18px;
     max-width: 34em;
-    font-size: 17px;
-    color: var(--bb-on-hero-muted);
+    font-size: 16px;
+    color: var(--on-hero-muted);
   }
   .bb-actions {
-    margin-top: 34px;
+    margin-top: 28px;
     display: flex;
-    gap: 14px;
+    gap: 12px;
     flex-wrap: wrap;
     align-items: center;
   }
@@ -514,86 +284,80 @@
     align-items: center;
     gap: 10px;
     background: #fff;
-    color: var(--bb-hero);
+    color: var(--hero);
     font-size: 18px;
-    font-weight: 600;
-    padding: 16px 34px;
+    font-weight: 700;
+    padding: 15px 32px;
     border-radius: 999px;
-    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .18);
   }
-  .bb-download:hover {
-    text-decoration: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  }
+  .bb-download:hover { text-decoration: none; box-shadow: 0 10px 28px rgba(0, 0, 0, .28); }
   .bb-download svg { width: 20px; height: 20px; flex: none; }
   .bb-secondary {
-    color: var(--bb-on-hero);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--on-hero);
+    border: 1px solid rgba(255, 255, 255, .28);
     border-radius: 999px;
-    padding: 14px 26px;
+    padding: 13px 24px;
     font-size: 15px;
   }
-  .bb-secondary:hover { text-decoration: none; background: rgba(255, 255, 255, 0.08); }
+  .bb-secondary:hover { text-decoration: none; background: rgba(255, 255, 255, .08); }
   .bb-note {
     margin-top: 14px;
     font-size: 13.5px;
-    color: var(--bb-on-hero-muted);
+    color: var(--on-hero-muted);
   }
+  .bb-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   .bb-not-windows {
     display: none;
     margin-top: 16px;
     max-width: 34em;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
+    background: rgba(255, 255, 255, .1);
+    border-radius: var(--r-row);
     padding: 14px 18px;
     font-size: 14px;
-    color: var(--bb-on-hero);
+    color: var(--on-hero);
   }
   .bb-not-windows.show { display: block; }
   .bb-copy {
     margin-left: 6px;
     font: inherit;
     font-size: 13px;
-    color: var(--bb-on-hero);
+    color: var(--on-hero);
     background: none;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, .35);
     border-radius: 999px;
     padding: 2px 12px;
     cursor: pointer;
   }
   .bb-trust {
-    margin-top: 26px;
+    margin-top: 24px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 22px;
+    gap: 6px 20px;
     font-size: 13.5px;
-    color: var(--bb-on-hero-muted);
+    color: var(--on-hero-muted);
   }
-  .privacy-sec { border-top: none; padding: 0 0 40px; }
-  .privacy-fold { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 4px; font-size: 14px; color: var(--muted); }
-  .privacy-fold summary { cursor: pointer; }
-  .privacy-fold ul { margin: 12px 0 0; padding-left: 1.2em; }
-  .privacy-fold li { margin-top: 8px; line-height: 1.8; max-width: 52em; }
-  .privacy-fold li b { color: var(--ink); font-weight: 600; margin-right: 6px; }
   .bb-trust span::before {
     content: "";
     display: inline-block;
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--bb-brand);
+    background: #5cc99c;
     margin-right: 8px;
     vertical-align: middle;
   }
+
+  /* screenshots */
   .carousel { min-width: 0; }
   .track {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    border-radius: 18px;
-    background: #f2f6f3;
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    background: var(--bg);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .32);
   }
   .track::-webkit-scrollbar { display: none; }
   .track:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
@@ -601,13 +365,16 @@
     flex: 0 0 100%;
     scroll-snap-align: start;
     margin: 0;
+    display: flex;
+    flex-direction: column;
   }
   .slide img { width: 100%; height: auto; display: block; }
   .slide figcaption {
     padding: 12px 18px 14px;
     font-size: 14px;
-    color: #15291f;
+    color: var(--ink);
     background: #fff;
+    flex: 1;
   }
   .car-controls {
     margin-top: 16px;
@@ -620,14 +387,14 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, .3);
     background: none;
-    color: var(--bb-on-hero);
+    color: var(--on-hero);
     font-size: 22px;
     line-height: 1;
     cursor: pointer;
   }
-  .car-btn:hover { background: rgba(255, 255, 255, 0.1); }
+  .car-btn:hover { background: rgba(255, 255, 255, .1); }
   .dots { display: flex; gap: 8px; }
   .dots .dot {
     width: 8px;
@@ -635,37 +402,34 @@
     padding: 0;
     border-radius: 999px;
     border: none;
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, .35);
     cursor: pointer;
-    transition: width 0.25s, background 0.25s;
+    transition: width .25s, background .25s;
   }
   .dots .dot[aria-current="true"] { width: 22px; background: #fff; }
-  .car-note { margin-top: 8px; text-align: center; font-size: 12px; color: var(--bb-on-hero-muted); }
-  @media (max-width: 960px) {
-    .bb-hero-grid { grid-template-columns: minmax(0, 1fr); }
-  }
+  .car-note { margin-top: 8px; text-align: center; font-size: 12px; color: var(--on-hero-muted); }
 
-  .bb-section { border-top: none; padding: 80px 0 40px; }
+  /* ============ Bridgeboard features ============ */
   .bb-features {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
-  .bb-feature {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 30px 30px 28px;
+  .bb-feature { padding: 26px 26px 24px; }
+  .bb-feature .icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
   }
-  .bb-feature .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--bb-brand);
-    margin-bottom: 16px;
-  }
-  .bb-feature h3 { font-size: 18px; font-weight: 600; color: var(--ink); }
-  .bb-feature p { margin-top: 10px; font-size: 14.5px; line-height: 1.8; }
+  .bb-feature .icon svg { width: 22px; height: 22px; }
+  .bb-feature h3 { font-size: 17.5px; font-weight: 700; color: var(--ink); }
+  .bb-feature p { margin-top: 8px; font-size: 14.5px; line-height: 1.8; }
   .bb-colors { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
   .bb-colors span { font-size: 12.5px; padding: 2px 10px; border-radius: 999px; }
   .c-red { color: #b44238; background: #fbe6e3; }
@@ -673,144 +437,355 @@
   .c-blue { color: #3667b6; background: #e3ecfa; }
   .c-yellow { color: #846711; background: #f7efd2; }
   .c-green { color: #257850; background: #dff2e7; }
+  .bars { margin-top: 12px; display: grid; gap: 7px; }
+  .bars span { display: block; height: 7px; border-radius: 999px; background: rgba(31, 61, 51, .13); overflow: hidden; }
+  .bars span i { display: block; height: 100%; border-radius: inherit; background: var(--brand); }
   .bb-fit {
-    margin-top: 22px;
+    margin-top: 18px;
     font-size: 14px;
     color: var(--muted);
   }
+  code { font-size: .92em; background: var(--accent-soft); color: var(--accent); padding: 1px 6px; border-radius: 6px; }
 
+  /* ============ Install ============ */
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    counter-reset: step;
+    gap: 16px;
   }
-  .step {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 30px;
-  }
+  .step { padding: 26px; }
   .step .num {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--bb-soft);
-    color: var(--bb-accent);
-    font-weight: 600;
+    background: var(--brand);
+    color: #fff;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
-  .step h3 { font-size: 17px; font-weight: 600; color: var(--ink); }
+  .step h3 { font-size: 17px; font-weight: 700; color: var(--ink); }
   .step p { margin-top: 8px; font-size: 14.5px; line-height: 1.8; }
   .step .warn {
     margin-top: 14px;
-    background: #fff1dd;
-    color: #7a4100;
-    border-radius: 12px;
+    background: var(--warn-bg);
+    color: var(--warn-text);
+    border-radius: 14px;
     padding: 10px 14px;
     font-size: 13.5px;
     line-height: 1.7;
   }
 
-  .faq { margin-top: 48px; border-top: 1px solid var(--line); }
-  .faq details { border-bottom: 1px solid var(--line); padding: 18px 4px; }
-  .faq summary {
+  /* FAQ and the privacy note: rows in one card, opened by a round chevron */
+  .faq { margin-top: 16px; padding: 8px 26px; }
+  .faq details, .privacy-fold { border-bottom: 1px solid var(--line); }
+  .faq details:last-of-type { border-bottom: none; }
+  .faq summary, .privacy-fold summary {
+    list-style: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 0;
     font-size: 16px;
-    color: var(--ink);
     font-weight: 600;
-    list-style-position: outside;
+    color: var(--ink);
   }
-  .faq details p { margin-top: 10px; font-size: 14.5px; line-height: 1.85; max-width: 46em; }
-  .faq-more { margin-top: 20px; font-size: 14px; }
+  .faq summary::-webkit-details-marker, .privacy-fold summary::-webkit-details-marker { display: none; }
+  .faq summary::after, .privacy-fold summary::after {
+    content: "";
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23297c5c' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / 16px no-repeat;
+    transition: transform .2s ease;
+  }
+  .faq details[open] > summary::after, .privacy-fold[open] > summary::after { transform: rotate(180deg); }
+  .faq details p { padding-bottom: 16px; font-size: 14.5px; line-height: 1.85; max-width: 52em; }
+  .faq-more { margin-top: 16px; font-size: 14px; color: var(--muted); }
 
+  /* privacy: one quiet folded row */
+  .privacy-sec { padding-top: 16px; }
+  .privacy-fold { border: none; padding: 0 26px; }
+  .privacy-fold summary { font-size: 14.5px; font-weight: 500; color: var(--muted); padding: 13px 0; }
+  .privacy-fold ul { margin: 0 0 4px; padding-left: 1.2em; font-size: 14px; color: var(--body); }
+  .privacy-fold li { margin-top: 8px; line-height: 1.8; max-width: 56em; }
+  .privacy-fold li b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+  .privacy-fold .faq-more { padding-bottom: 18px; }
+
+  /* ============ Made by Boundly ============ */
   .made-by {
-    padding: 70px 0 0;
+    padding: 88px 0 0;
     text-align: center;
-    color: var(--muted);
-    font-size: 14px;
-    letter-spacing: 0.08em;
   }
   .made-by .line {
     width: 1px;
-    height: 48px;
+    height: 44px;
     background: var(--line);
-    margin: 0 auto 18px;
+    margin: 0 auto 16px;
+  }
+  .made-by .pill {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: .1em;
+    color: var(--muted);
+    padding: 6px 18px;
+    border-radius: 999px;
   }
 
-  .badge-live { color: #fff; background: #2f8f6a; }
+  /* ============ Boundly hero ============ */
+  .hero { padding-top: 48px; }
+  .hero-card { padding: 56px 52px 52px; }
+  .hero h1 {
+    font-weight: 700;
+    font-size: clamp(32px, 5.2vw, 54px);
+    line-height: 1.3;
+    color: var(--ink);
+    letter-spacing: .01em;
+  }
+  .hero .mission {
+    margin-top: 22px;
+    max-width: 34em;
+    font-size: 17px;
+    color: var(--body);
+  }
+  /* 抵达线 · the arrival line: a line that travels, then arrives at a point */
+  .arrival {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    height: 8px;
+  }
+  .arrival .path { height: 2px; border-radius: 2px; background: var(--brand); opacity: .5; width: 180px; }
+  .arrival .point { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); margin-left: 10px; flex: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .arrival .path { width: 0; animation: travel 1.6s cubic-bezier(.22, 1, .36, 1) .3s forwards; }
+    .arrival .point { opacity: 0; animation: arrive .5s ease 1.6s forwards; }
+    @keyframes travel { to { width: 180px; } }
+    @keyframes arrive { to { opacity: 1; } }
+  }
+
+  /* ============ Products ============ */
+  .product-card { padding: 40px 44px; }
+  .product-top {
+    display: flex;
+    align-items: center;
+    gap: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .product-name { font-size: 30px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+  .badge {
+    font-size: 12px;
+    letter-spacing: .06em;
+    padding: 4px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge-building { color: var(--accent); background: var(--accent-soft); }
+  .badge-road { color: var(--muted); border: 1px solid var(--line); }
+  .badge-live { color: #fff; background: var(--accent); }
+  .product-dim { font-size: 13px; letter-spacing: .12em; color: var(--muted); }
+  .product-tagline {
+    margin-top: 18px;
+    font-size: 17px;
+    color: var(--body);
+    max-width: 36em;
+    line-height: 1.75;
+  }
+  .concepts {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .concept {
+    background: rgba(255, 255, 255, .55);
+    border: 1px solid var(--line);
+    border-radius: var(--r-row);
+    padding: 20px 20px 18px;
+  }
+  .concept .concept-line { width: 26px; height: 4px; border-radius: 999px; background: var(--brand); margin-bottom: 14px; }
+  .concept h3 { font-size: 16.5px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+  .concept .concept-en { font-size: 11.5px; letter-spacing: .06em; color: var(--muted); margin-top: 2px; }
+  .concept p { margin-top: 10px; font-size: 14.5px; line-height: 1.8; }
+  .proto-row {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .proto-link {
+    display: inline-block;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 9px 22px;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  .proto-link:hover { background: rgba(47, 143, 106, .2); text-decoration: none; }
+  .proto-note { font-size: 12.5px; color: var(--muted); }
+
+  .road-list { margin-top: 14px; display: grid; gap: 10px; }
+  .road-item {
+    display: flex;
+    align-items: center;
+    gap: 8px 18px;
+    padding: 18px 22px;
+    border-radius: var(--r-row);
+    flex-wrap: wrap;
+  }
+  .road-item .road-name { font-size: 18px; font-weight: 700; color: var(--ink); flex: none; }
+  .road-item .road-desc { font-size: 14.5px; color: var(--body); flex: 1 1 20em; }
+  .road-item .badge { margin-left: auto; }
   .bb-row-link { font-size: 14.5px; white-space: nowrap; }
 
-  .contact-list { margin-top: 8px; }
+  /* ============ Boundaries ============ */
+  .boundaries {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .boundary { padding: 28px 30px; }
+  .boundary h3 { font-weight: 700; font-size: 19px; color: var(--ink); }
+  .boundary .b-en { font-size: 11.5px; letter-spacing: .06em; color: var(--muted); margin-top: 2px; }
+  .boundary p { margin-top: 10px; font-size: 14.5px; line-height: 1.85; }
+
+  /* ============ Door quote ============ */
+  .door { text-align: center; padding: 110px 0 20px; }
+  .door blockquote {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .door .door-sub { margin-top: 12px; font-size: 16px; color: var(--muted); font-style: italic; }
+
+  /* ============ Subscribe ============ */
+  .subscribe-box { max-width: 680px; padding: 36px 40px; }
+  .subscribe-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  .subscribe-form input[type="email"] {
+    flex: 1 1 240px;
+    min-width: 0;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--ink);
+    padding: 13px 20px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .85);
+  }
+  .subscribe-form input[type="email"]::placeholder { color: var(--muted); }
+  .subscribe-form input[type="email"]:focus { outline: none; border-color: var(--accent); }
+  .subscribe-form button {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 999px;
+    padding: 13px 30px;
+    cursor: pointer;
+  }
+  .subscribe-form button:hover { background: #22684d; }
+  .form-error {
+    margin-top: 10px;
+    font-size: 13.5px;
+    color: var(--warn-text);
+    background: var(--warn-bg);
+    border-radius: 12px;
+    padding: 6px 12px;
+    display: none;
+    width: 100%;
+  }
+  .form-error.show { display: block; }
+  .form-done {
+    margin-top: 22px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+  .form-done.show { display: flex; }
+  .form-done .point { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); flex: none; }
 
   /* ============ Footer ============ */
   footer {
+    margin-top: 84px;
     border-top: 1px solid var(--line);
-    padding: 56px 0 72px;
+    padding: 44px 0 64px;
     font-size: 13px;
     color: var(--muted);
     line-height: 2.1;
   }
-  footer .east {
-    font-family: var(--serif);
-    color: var(--ink-2);
-    font-size: 14px;
-    margin-bottom: 14px;
-  }
+  footer .east { color: var(--ink); font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .contact-list { margin-top: 4px; }
 
   /* ============ Scroll reveal (subtle) ============ */
   @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.in {
-      opacity: 1;
-      transform: none;
-    }
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
   }
 
   /* ============ Responsive ============ */
-  @media (max-width: 760px) {
-    .hero { padding-top: 70px; padding-bottom: 84px; }
-    section { padding: 64px 0; }
-    .door { padding: 90px 0; }
-    .product-card { padding: 32px 24px; }
-    .concepts { grid-template-columns: 1fr; gap: 32px; }
-    .boundaries { grid-template-columns: 1fr; }
-    .boundary { padding: 30px 24px; }
-    .road-item .badge { margin-left: 0; }
-    .subscribe-form button { flex: 1 1 100%; }
+  @media (max-width: 1000px) {
+    .bb-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+    .bb-features { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 860px) {
     .top-nav { display: none; }
-    .bb-hero { padding: 36px 20px 28px; border-radius: 22px; }
+  }
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    .wordmark small { display: none; }
+    .header-inner { padding: 8px 8px 8px 18px; }
+    section { padding-top: 64px; }
+    .bb-hero { padding: 32px 20px 26px; margin-top: 16px; }
     .bb-download { width: 100%; justify-content: center; }
     .bb-secondary { width: 100%; text-align: center; }
-    .bb-features, .steps { grid-template-columns: 1fr; }
+    .bb-features, .steps, .concepts, .boundaries { grid-template-columns: 1fr; }
+    .faq, .privacy-fold { padding-left: 18px; padding-right: 18px; }
+    .hero-card { padding: 34px 22px; }
+    .product-card { padding: 28px 22px; }
+    .boundary { padding: 24px 22px; }
+    .road-item .badge { margin-left: 0; }
+    .subscribe-box { padding: 28px 22px; }
+    .subscribe-form button { flex: 1 1 100%; }
+    .door { padding-top: 84px; }
   }
 </style>
 </head>
 <body>
 
-<header class="wrap">
-  <div class="header-inner">
-    <div class="wordmark">
-      Boundly
+<header class="site-head wrap" id="top">
+  <div class="header-inner glass">
+    <a class="wordmark" href="#top">
+      <b>Boundly</b>
       <small><span class="zh">纵界融语 · 让表达，真实抵达</span><span class="en">Where expression truly arrives</span></small>
-    </div>
+    </a>
     <div class="header-right">
-    <nav class="top-nav" aria-label="页面导航">
-      <a href="#bridgeboard">Bridgeboard</a>
-      <a href="#bb-privacy"><span class="zh">隐私和安全</span><span class="en">Privacy</span></a>
-      <a href="#boundly">Boundly</a>
-      <a href="#subscribe"><span class="zh">联系</span><span class="en">Contact</span></a>
-    </nav>
-    <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language / 切换语言">
-      <span class="zh">EN</span><span class="en">中文</span>
-    </button>
+      <nav class="top-nav" aria-label="页面导航">
+        <a href="#bridgeboard">Bridgeboard</a>
+        <a href="#bb-install"><span class="zh">安装</span><span class="en">Set up</span></a>
+        <a href="#bb-privacy"><span class="zh">隐私和安全</span><span class="en">Privacy</span></a>
+        <a href="#boundly">Boundly</a>
+        <a href="#subscribe"><span class="zh">联系</span><span class="en">Contact</span></a>
+      </nav>
+      <button class="lang-toggle press" id="langToggle" type="button" aria-label="Switch language / 切换语言">
+        <span class="zh">EN</span><span class="en">中文</span>
+      </button>
     </div>
   </div>
 </header>
@@ -818,7 +793,7 @@
 <main>
 
   <!-- ============ Bridgeboard (first screen) ============ -->
-  <div class="bb wrap" id="bridgeboard">
+  <div class="wrap" id="bridgeboard">
     <div class="bb-hero">
       <div class="bb-hero-grid">
       <div class="bb-text">
@@ -828,30 +803,40 @@
         <span class="bb-badge"><span class="zh">已发布 · 免费</span><span class="en">Released · Free</span></span>
       </div>
       <h1>
-        <span class="zh">所有课程的截止日期，<br>一个页面看完。</span>
-        <span class="en">Every Blackboard deadline, on one page.</span>
+        <span class="zh">你的专属 Blackboard 看板</span>
+        <span class="en">Your personal Blackboard dashboard</span>
       </h1>
+      <p class="h1-sub"><span class="zh">Your personal Blackboard dashboard</span><span class="en">你的专属 Blackboard 看板</span></p>
+      <ul class="bb-chips" aria-label="功能 / Features">
+        <li><span class="zh">截止提醒</span><span class="en">Deadlines</span></li>
+        <li><span class="zh">文件下载</span><span class="en">File downloads</span></li>
+        <li><span class="zh">手机提醒</span><span class="en">Phone alerts</span></li>
+        <li><span class="zh">清单</span><span class="en">Checklist</span></li>
+        <li><span class="zh">消息</span><span class="en">Messages</span></li>
+        <li><span class="zh">公告</span><span class="en">Announcements</span></li>
+        <li><span class="zh">成绩</span><span class="en">Grades</span></li>
+      </ul>
       <p class="bb-lead">
-        <span class="zh">给留学生的 Blackboard 学习面板。截止日期、课程文件、手机提醒、清单和课程消息都在一起，不用再一门一门课点进去找。</span>
-        <span class="en">A Blackboard study dashboard for international students. Deadlines, course files, phone alerts, a checklist and course messages in one place, instead of clicking through every course.</span>
+        <span class="zh">给留学生的 Blackboard 学习面板。所有课程的东西放在一个页面上，不用再一门一门课点进去找。</span>
+        <span class="en">A Blackboard dashboard for international students. Everything from every course on one page, instead of clicking through each one.</span>
       </p>
 
       <div class="bb-actions">
-        <a class="bb-download" id="bbDownload" href="https://github.com/HeathTeng/Bridgeboard/releases/latest/download/Bridgeboard-Windows.zip">
+        <a class="bb-download press" id="bbDownload" data-umami-event="download-windows" href="https://github.com/HeathTeng/Bridgeboard/releases/latest/download/Bridgeboard-Windows.zip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
           <span class="zh">下载 Windows 版</span><span class="en">Download for Windows</span>
         </a>
-        <a class="bb-secondary" href="#bb-features">
+        <a class="bb-secondary press" href="#bb-features">
           <span class="zh">先看看它能做什么</span><span class="en">See what it does</span>
         </a>
       </div>
       <p class="bb-note">
-        <span class="zh">约 34 MB · 解压后双击 start.bat 就能用，不用安装其他东西 · <a href="#bb-install" style="color:inherit;text-decoration:underline">三步装好</a></span>
-        <span class="en">About 34 MB · Unzip and double-click start.bat; nothing else to install · <a href="#bb-install" style="color:inherit;text-decoration:underline">Set up in 3 steps</a></span>
+        <span class="zh">约 34 MB · 解压后双击 start.bat 就能用，不用安装其他东西 · <a href="#bb-install">三步装好</a></span>
+        <span class="en">About 34 MB · Unzip and double-click start.bat; nothing else to install · <a href="#bb-install">Set up in 3 steps</a></span>
       </p>
       <p class="bb-not-windows" id="bbNotWindows" role="note">
-        <span class="zh">Bridgeboard 目前只有 Windows 版。请在你的 Windows 电脑上打开 getboundly.com 下载。</span>
-        <span class="en">Bridgeboard is Windows-only for now. Open getboundly.com on your Windows computer to download it.</span>
+        <span class="zh">Bridgeboard 目前只有 Windows 版，Mac 版正在做。请在你的 Windows 电脑上打开 getboundly.com 下载。</span>
+        <span class="en">Bridgeboard is Windows-only for now; a Mac version is on the way. Open getboundly.com on your Windows computer to download it.</span>
         <button class="bb-copy" id="bbCopy" type="button"><span class="zh">复制网址</span><span class="en">Copy link</span></button>
         <span id="bbCopied" aria-live="polite"></span>
       </p>
@@ -865,30 +850,34 @@
       </div>
       <div class="carousel" id="bbCarousel" aria-roledescription="carousel" aria-label="Bridgeboard 截图 / screenshots">
         <div class="track" id="bbTrack" tabindex="0">
-          <figure class="slide" role="group" aria-roledescription="slide" aria-label="1 / 5">
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="1 / 6">
             <img src="assets/slide-overview.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：一个页面看全：今天要注意的事、截止日期、课程文件、手机提醒">
-            <figcaption><span class="zh">一个页面看全：今天要注意的事、截止日期、课程文件、手机提醒</span><span class="en">Everything on one page: today's alerts, deadlines, files and phone alerts</span></figcaption>
+            <figcaption><span class="zh">一个页面看全：今天要注意的事、截止日期、课程文件、手机提醒</span><span class="en">Everything on one page: what needs you today, deadlines, files and phone alerts</span></figcaption>
           </figure>
-          <figure class="slide" role="group" aria-roledescription="slide" aria-label="2 / 5">
-            <img src="assets/slide-deadlines.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：截止日期按五种颜色排好，最急的在最上面；点 ↗ 打开 Blackboard，逾期的可以点 × 忽略" loading="lazy">
-            <figcaption><span class="zh">截止日期按五种颜色排好，最急的在最上面；点 ↗ 打开 Blackboard，逾期的可以点 × 忽略</span><span class="en">Deadlines by colour, the most urgent first; ↗ opens Blackboard, × stops reminders for overdue work</span></figcaption>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="2 / 6">
+            <img src="assets/slide-deadlines.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：截止日期按颜色排好，最急的在最上面；点「在 Blackboard 打开 ↗」直接去作业页" loading="lazy">
+            <figcaption><span class="zh">截止日期按颜色排好，最急的在最上面；点「在 Blackboard 打开 ↗」直接去作业页</span><span class="en">Deadlines by colour, the most urgent first; "在 Blackboard 打开 ↗" goes straight to the assignment</span></figcaption>
           </figure>
-          <figure class="slide" role="group" aria-roledescription="slide" aria-label="3 / 5">
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="3 / 6">
             <img src="assets/slide-files.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：勾选课程或文件，课件按课程自动下载整理好" loading="lazy">
             <figcaption><span class="zh">勾选课程或文件，课件按课程自动下载整理好</span><span class="en">Tick courses or single files and they download, sorted by course</span></figcaption>
           </figure>
-          <figure class="slide" role="group" aria-roledescription="slide" aria-label="4 / 5">
-            <img src="assets/slide-alerts.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：快到期时提醒到你的手机（iPhone / 安卓）" loading="lazy">
-            <figcaption><span class="zh">快到期时提醒到你的手机（iPhone / 安卓）</span><span class="en">Alerts on your phone before things are due</span></figcaption>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="4 / 6">
+            <img src="assets/slide-alerts.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：快到期时提醒到你的手机（iPhone / 安卓），默认关闭" loading="lazy">
+            <figcaption><span class="zh">快到期时提醒到你的手机（iPhone / 安卓），默认关闭</span><span class="en">Alerts on your phone before things are due (iPhone / Android), off by default</span></figcaption>
           </figure>
-          <figure class="slide" role="group" aria-roledescription="slide" aria-label="5 / 5">
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="5 / 6">
             <img src="assets/slide-checklist.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：作业自动进清单，交了自动打勾；也能写自己的待办" loading="lazy">
             <figcaption><span class="zh">作业自动进清单，交了自动打勾；也能写自己的待办</span><span class="en">Assignments join your checklist and tick themselves when submitted; add your own to-dos too</span></figcaption>
+          </figure>
+          <figure class="slide" role="group" aria-roledescription="slide" aria-label="6 / 6">
+            <img src="assets/slide-grades.jpg" width="1200" height="747" alt="Bridgeboard 示例数据截图：每门课的成绩一眼看完，还有几项在等评分" loading="lazy">
+            <figcaption><span class="zh">每门课的成绩一眼看完，还有几项在等评分</span><span class="en">Grades for every course at a glance, and what is still waiting to be marked</span></figcaption>
           </figure>
         </div>
         <div class="car-controls">
           <button type="button" class="car-btn" id="bbPrev" aria-label="上一张 / previous">‹</button>
-          <div class="dots" id="bbDots"><button type="button" class="dot" aria-label="第 1 张 / slide 1"></button><button type="button" class="dot" aria-label="第 2 张 / slide 2"></button><button type="button" class="dot" aria-label="第 3 张 / slide 3"></button><button type="button" class="dot" aria-label="第 4 张 / slide 4"></button><button type="button" class="dot" aria-label="第 5 张 / slide 5"></button></div>
+          <div class="dots" id="bbDots"><button type="button" class="dot" aria-label="第 1 张 / slide 1"></button><button type="button" class="dot" aria-label="第 2 张 / slide 2"></button><button type="button" class="dot" aria-label="第 3 张 / slide 3"></button><button type="button" class="dot" aria-label="第 4 张 / slide 4"></button><button type="button" class="dot" aria-label="第 5 张 / slide 5"></button><button type="button" class="dot" aria-label="第 6 张 / slide 6"></button></div>
           <button type="button" class="car-btn" id="bbNext" aria-label="下一张 / next">›</button>
         </div>
         <p class="car-note"><span class="zh">截图来自示例模式，不是真实账号</span><span class="en">Screenshots use demo data</span></p>
@@ -898,21 +887,25 @@
   </div>
 
   <!-- ============ Bridgeboard features ============ -->
-  <section class="bb bb-section" id="bb-features">
+  <section id="bb-features">
     <div class="wrap">
       <div class="section-head reveal">
         <h2>
           <span class="zh">装上以后，它帮你做这些</span>
           <span class="en">What it does for you</span>
         </h2>
+        <p>
+          <span class="zh">七件事，一个页面。面板里每一块都能收起来，只看你需要的。</span>
+          <span class="en">Seven things on one page. Every part can be folded away so you only see what you need.</span>
+        </p>
       </div>
       <div class="bb-features reveal">
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
+        <div class="bb-feature glass">
+          <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div>
           <h3><span class="zh">五种颜色的截止提醒</span><span class="en">Deadlines in five colours</span></h3>
           <p>
-            <span class="zh">所有课程的作业按颜色排好，一眼看出哪个最急。点作业名直接打开 Blackboard 的作业页。</span>
-            <span class="en">Every assignment from every course, sorted by colour so the urgent one stands out. Click a title to open it in Blackboard.</span>
+            <span class="zh">所有课程的作业按颜色排好，一眼看出哪个最急。每项旁边有「在 Blackboard 打开 ↗」，点一下直接到作业页。</span>
+            <span class="en">Every assignment from every course, sorted by colour so the urgent one stands out. "在 Blackboard 打开 ↗" next to each one takes you straight there.</span>
           </p>
           <div class="bb-colors" aria-hidden="true">
             <span class="c-red"><span class="zh">逾期</span><span class="en">Overdue</span></span>
@@ -922,29 +915,46 @@
             <span class="c-green"><span class="zh">已完成</span><span class="en">Done</span></span>
           </div>
         </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
+        <div class="bb-feature glass">
+          <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2.2h7a2 2 0 0 1 2 2v7.8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg></div>
           <h3><span class="zh">课程文件一键下载</span><span class="en">Course files in one click</span></h3>
           <p>
-            <span class="zh">勾选课程，选一个文件夹（U 盘也行），课件按课程自动整理好。已经下过的会跳过，还能顺便导出给 AI 用的文字版。</span>
+            <span class="zh">勾选课程，选一个文件夹（U 盘也行），课件按课程自动整理好。已经下过的会跳过，还能导出给 AI 用的文字版。</span>
             <span class="en">Tick the courses, pick a folder (a USB drive works too) and the files arrive sorted by course. Files you already have are skipped, and you can export a text copy for AI tools.</span>
           </p>
         </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
+        <div class="bb-feature glass">
+          <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></div>
           <h3><span class="zh">快到期时提醒到手机</span><span class="en">Alerts on your phone</span></h3>
           <p>
             <span class="zh">iPhone 用 Bark，安卓用 ntfy。默认关闭，你自己打开、测试成功后才会发。也可以导出到手机日历，电脑关机时也会提醒。</span>
-            <span class="en">Bark on iPhone, ntfy on Android. Off by default; it only sends after you switch it on and a test reaches your phone. You can also export deadlines to your phone's calendar.</span>
+            <span class="en">Bark on iPhone, ntfy on Android. Off by default; it only sends after you switch it on and a test reaches your phone. You can also export deadlines to your phone’s calendar.</span>
           </p>
         </div>
-        <div class="bb-feature">
-          <div class="dot" aria-hidden="true"></div>
-          <h3><span class="zh">清单和课程消息</span><span class="en">Checklist and course messages</span></h3>
+        <div class="bb-feature glass">
+          <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="5"/><path d="M8.5 12.3l2.4 2.4 4.8-5"/></svg></div>
+          <h3><span class="zh">清单</span><span class="en">Checklist</span></h3>
           <p>
-            <span class="zh">作业自动进清单，交了自动打勾，也能加自己的待办。老师和同学发的课程消息集中在一处，未读的会标出来。</span>
-            <span class="en">Assignments join your checklist and tick themselves when submitted; add your own to-dos too. Course messages from every course in one list, unread ones marked.</span>
+            <span class="zh">作业自动进清单，交了自动打勾。也能加自己的待办，改时间、删掉都很方便，用起来像手机上的提醒事项。</span>
+            <span class="en">Assignments join your checklist and tick themselves when submitted. Add your own to-dos too; it works like the Reminders app on your phone.</span>
           </p>
+        </div>
+        <div class="bb-feature glass">
+          <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8.5a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17H5a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 5 5.5z"/></svg></div>
+          <h3><span class="zh">课程消息和公告</span><span class="en">Messages and announcements</span></h3>
+          <p>
+            <span class="zh">老师和同学发的课程消息、各门课的公告集中在一处，未读的会标出来，不会漏看。</span>
+            <span class="en">Course messages and announcements from every course in one place, with unread ones marked so nothing slips by.</span>
+          </p>
+        </div>
+        <div class="bb-feature glass">
+          <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19.5V13M12 19.5V5.5M19 19.5V9.5"/></svg></div>
+          <h3><span class="zh">成绩</span><span class="en">Grades</span></h3>
+          <p>
+            <span class="zh">每门课的成绩用绿色进度条显示，平均分和等待评分的项目一眼看清。以前学期的课程自动收进「往期课程」。</span>
+            <span class="en">Grades for each course as green bars, with averages and items still waiting to be marked. Earlier terms fold away by themselves.</span>
+          </p>
+          <div class="bars" aria-hidden="true"><span><i style="width:80%"></i></span><span><i style="width:75%"></i></span><span><i style="width:62%"></i></span></div>
         </div>
       </div>
       <p class="bb-fit reveal">
@@ -955,7 +965,7 @@
   </section>
 
   <!-- ============ Bridgeboard install ============ -->
-  <section class="bb bb-section" id="bb-install">
+  <section id="bb-install">
     <div class="wrap">
       <div class="section-head reveal">
         <h2>
@@ -964,7 +974,7 @@
         </h2>
       </div>
       <div class="steps reveal">
-        <div class="step">
+        <div class="step glass">
           <div class="num">1</div>
           <h3><span class="zh">下载</span><span class="en">Download</span></h3>
           <p>
@@ -976,7 +986,7 @@
             <span class="en">If your browser says it's not commonly downloaded, choose "Keep".</span>
           </p>
         </div>
-        <div class="step">
+        <div class="step glass">
           <div class="num">2</div>
           <h3><span class="zh">先解压</span><span class="en">Unzip first</span></h3>
           <p>
@@ -988,7 +998,7 @@
             <span class="en">Unzip first. Double-clicking inside the zip won't work.</span>
           </p>
         </div>
-        <div class="step">
+        <div class="step glass">
           <div class="num">3</div>
           <h3><span class="zh">双击 start.bat</span><span class="en">Double-click start.bat</span></h3>
           <p>
@@ -1002,7 +1012,7 @@
         </div>
       </div>
 
-      <div class="faq reveal">
+      <div class="faq glass reveal">
         <details>
           <summary><span class="zh">要钱吗？</span><span class="en">Does it cost anything?</span></summary>
           <p>
@@ -1020,8 +1030,8 @@
         <details>
           <summary><span class="zh">用 Mac 能用吗？</span><span class="en">Does it work on a Mac?</span></summary>
           <p>
-            <span class="zh">目前只有 Windows 版。</span>
-            <span class="en">Not yet; it's Windows-only for now.</span>
+            <span class="zh">目前只有 Windows 版，Mac 版正在做。想第一时间知道，可以在页面最下面订阅。</span>
+            <span class="en">Not yet: it's Windows-only for now, and a Mac version is on the way. Subscribe at the bottom of this page to hear when it's ready.</span>
           </p>
         </details>
         <details>
@@ -1038,22 +1048,22 @@
             <span class="en">Download again from here and unzip anywhere. Your checklist, settings and sign-in are kept automatically.</span>
           </p>
         </details>
-        <p class="faq-more">
-          <a href="https://github.com/HeathTeng/Bridgeboard/blob/main/docs/FAQ.md" target="_blank" rel="noopener">
-            <span class="zh">全部常见问题 →</span><span class="en">All questions →</span>
-          </a>
-          &nbsp;·&nbsp;
-          <span class="zh">遇到问题写信到 <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
-          <span class="en">Stuck? Write to <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
-        </p>
       </div>
+      <p class="faq-more">
+        <a href="https://github.com/HeathTeng/Bridgeboard/blob/main/docs/FAQ.md" target="_blank" rel="noopener" data-umami-event="github">
+          <span class="zh">全部常见问题 →</span><span class="en">All questions →</span>
+        </a>
+        &nbsp;·&nbsp;
+        <span class="zh">遇到问题写信到 <a href="mailto:feedback@getboundly.com" data-umami-event="email">feedback@getboundly.com</a></span>
+        <span class="en">Stuck? Write to <a href="mailto:feedback@getboundly.com" data-umami-event="email">feedback@getboundly.com</a></span>
+      </p>
     </div>
   </section>
 
   <!-- ============ Bridgeboard privacy (folded) ============ -->
-  <section class="bb privacy-sec" id="bb-privacy">
+  <section class="privacy-sec" id="bb-privacy">
     <div class="wrap">
-      <details class="privacy-fold" id="bbPrivacyFold">
+      <details class="privacy-fold glass" id="bbPrivacyFold">
         <summary><span class="zh">隐私和安全说明</span><span class="en">Privacy and safety</span></summary>
         <ul>
           <li><b><span class="zh">只在你的电脑上运行</span><span class="en">Runs only on your computer</span></b>
@@ -1066,16 +1076,16 @@
             <span class="zh">手机提醒默认关闭。只有你自己打开、测试成功之后，才会把作业名、课程名、截止时间和链接经 Bark（api.day.app）或 ntfy（ntfy.sh）发到你的手机。打开「隐藏作业名」就连名字和链接都不发。登录信息和消息内容永远不会发出。</span><span class="en">Phone alerts are off by default. Only after you switch them on and a test reaches your phone are assignment and course names, due times and links sent through Bark (api.day.app) or ntfy (ntfy.sh). Turn on 隐藏作业名 to send no names or links. Sign-in data and message text are never sent.</span></li>
           <li><b><span class="zh">有几件事要你自己注意</span><span class="en">A few things are up to you</span></b>
             <span class="zh">不要把 .blackboard-mcp 文件夹或复制的 cURL 发给任何人，它们相当于你的登录。ntfy 的频道名也像密码一样别外传。Bridgeboard 不是学校官方工具，使用前可以看看学校的 IT 使用规定。</span><span class="en">Never share the .blackboard-mcp folder or a copied cURL: they work like your login. Keep your ntfy topic private like a password. Bridgeboard is not an official school tool; check your school’s IT acceptable-use policy.</span></li>
-          <li><b><span class="zh">代码公开，这个网站也不追踪你</span><span class="en">Open code, and no tracking here</span></b>
-            <span class="zh">全部代码公开在 GitHub 上，谁都可以检查它做了什么。面板里的「意见反馈」只是打开你自己的邮件软件。这个网站不用 Cookie、不做访问统计（只在你的浏览器里记住中英文选择），订阅只是用你的邮箱给我们写一封信。</span><span class="en">All the code is public on GitHub for anyone to check. 意见反馈 in the panel only opens your own mail app. This website uses no cookies or analytics (your browser only remembers your language choice); subscribing just sends us an email from your own mail app.</span></li>
+          <li><b><span class="zh">代码公开，这个网站不追踪你</span><span class="en">Open code, and no tracking of you here</span></b>
+            <span class="zh">全部代码公开在 GitHub 上，谁都可以检查它做了什么。面板里的「意见反馈」只是打开你自己的邮件软件。这个网站用 Umami 统计访问人数和下载次数，不用 Cookie、不收集个人信息（你的浏览器只记住中英文选择）；订阅只是用你的邮箱给我们写一封信。</span><span class="en">All the code is public on GitHub for anyone to check. 意见反馈 in the panel only opens your own mail app. This website counts visits and downloads with Umami, with no cookies and no personal data (your browser only remembers your language choice); subscribing just sends us an email from your own mail app.</span></li>
         </ul>
         <p class="faq-more">
-          <a href="https://github.com/HeathTeng/Bridgeboard#隐私和安全--privacy-and-safety" target="_blank" rel="noopener">
+          <a href="https://github.com/HeathTeng/Bridgeboard#隐私和安全--privacy-and-safety" target="_blank" rel="noopener" data-umami-event="github">
             <span class="zh">GitHub 上的完整说明 →</span><span class="en">Full details on GitHub →</span>
           </a>
           &nbsp;·&nbsp;
-          <span class="zh">有疑问写信到 <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
-          <span class="en">Questions? Write to <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a></span>
+          <span class="zh">有疑问写信到 <a href="mailto:feedback@getboundly.com" data-umami-event="email">feedback@getboundly.com</a></span>
+          <span class="en">Questions? Write to <a href="mailto:feedback@getboundly.com" data-umami-event="email">feedback@getboundly.com</a></span>
         </p>
       </details>
     </div>
@@ -1084,12 +1094,12 @@
   <!-- ============ Made by Boundly ============ -->
   <div class="made-by" id="boundly">
     <div class="line" aria-hidden="true"></div>
-    <span class="zh">Bridgeboard 由 Boundly 制作</span>
-    <span class="en">BRIDGEBOARD IS MADE BY BOUNDLY</span>
+    <span class="pill glass"><span class="zh">Bridgeboard 由 Boundly 制作</span><span class="en">BRIDGEBOARD IS MADE BY BOUNDLY</span></span>
   </div>
 
   <!-- ============ Hero ============ -->
   <div class="hero wrap">
+    <div class="hero-card glass">
     <p class="eyebrow">
       <span class="zh">从东方出发 · 走向世界</span>
       <span class="en">FROM THE EAST, TOWARD THE WORLD</span>
@@ -1105,6 +1115,7 @@
     <div class="arrival" aria-hidden="true">
       <div class="path"></div>
       <div class="point"></div>
+    </div>
     </div>
   </div>
 
@@ -1122,7 +1133,7 @@
         </p>
       </div>
 
-      <div class="product-card reveal">
+      <div class="product-card glass reveal">
         <div class="product-top">
           <span class="product-name">Bridgit</span>
           <span class="badge badge-building">
@@ -1190,7 +1201,7 @@
         </div>
 
         <div class="proto-row">
-          <a class="proto-link" href="https://heathteng.github.io/bridgit/" target="_blank" rel="noopener">
+          <a class="proto-link press" href="https://heathteng.github.io/bridgit/" target="_blank" rel="noopener">
             <span class="zh">体验原型 →</span>
             <span class="en">Try the prototype →</span>
           </a>
@@ -1200,7 +1211,7 @@
 
       <!-- Released, then on the road -->
       <div class="road-list reveal">
-        <div class="road-item">
+        <div class="road-item glass">
           <span class="road-name">Bridgeboard</span>
           <span class="road-desc">
             <span class="zh">学生 ↔ 学校系统 · 把 Blackboard 上散落在各门课里的截止日期和消息，放到一个看得懂的页面上。 <a class="bb-row-link" href="#bridgeboard">下载 →</a></span>
@@ -1211,7 +1222,7 @@
             <span class="en">Released</span>
           </span>
         </div>
-        <div class="road-item">
+        <div class="road-item glass">
           <span class="road-name">
             <span class="zh">法律工具</span>
             <span class="en">Legal tool</span>
@@ -1225,7 +1236,7 @@
             <span class="en">On the road</span>
           </span>
         </div>
-        <div class="road-item">
+        <div class="road-item glass">
           <span class="road-name">
             <span class="zh">AI 创业平台</span>
             <span class="en">AI venture base</span>
@@ -1258,7 +1269,7 @@
       </div>
 
       <div class="boundaries reveal">
-        <div class="boundary">
+        <div class="boundary glass">
           <h3><span class="zh">不锁付费墙</span><span class="en">No paywall on what matters</span></h3>
           <div class="b-en"><span class="zh">NO PAYWALL ON WHAT MATTERS</span><span class="en">不锁付费墙</span></div>
           <p>
@@ -1266,7 +1277,7 @@
             <span class="en">Nothing that delivers core value will ever be locked behind payment. We sell usefulness, time saved, and expanded ability — never features held hostage.</span>
           </p>
         </div>
-        <div class="boundary">
+        <div class="boundary glass">
           <h3><span class="zh">不卖数据</span><span class="en">We don't sell your data</span></h3>
           <div class="b-en"><span class="zh">WE DON'T SELL YOUR DATA</span><span class="en">不卖数据</span></div>
           <p>
@@ -1274,7 +1285,7 @@
             <span class="en">You are not traffic. You are not data points. You are a person. Your data is always exportable — and if you want to leave, we hold the door.</span>
           </p>
         </div>
-        <div class="boundary">
+        <div class="boundary glass">
           <h3><span class="zh">不用推送陷阱</span><span class="en">No push traps</span></h3>
           <div class="b-en"><span class="zh">NO PUSH TRAPS</span><span class="en">不用推送陷阱</span></div>
           <p>
@@ -1282,7 +1293,7 @@
             <span class="en">No red-dot anxiety, no infinite feeds, no "one more scroll" hooks. If you spend less time in our products while your life gets better — that is our greatest success.</span>
           </p>
         </div>
-        <div class="boundary">
+        <div class="boundary glass">
           <h3><span class="zh">错了公开改</span><span class="en">Mistakes, corrected in public</span></h3>
           <div class="b-en"><span class="zh">MISTAKES, CORRECTED IN PUBLIC</span><span class="en">错了公开改</span></div>
           <p>
@@ -1295,7 +1306,7 @@
   </section>
 
   <!-- ============ Door quote ============ -->
-  <section class="door">
+  <section class="door" aria-label="门一直开着 / The door stays open">
     <div class="wrap reveal">
       <blockquote>
         <span class="zh">门一直开着,节奏由你决定。</span>
@@ -1311,7 +1322,7 @@
   <!-- ============ Subscribe ============ -->
   <section id="subscribe">
     <div class="wrap reveal">
-      <div class="subscribe-box">
+      <div class="subscribe-box glass">
         <div class="section-head" style="margin-bottom: 0;">
           <h2>
             <span class="zh">保持联系</span>
@@ -1326,7 +1337,7 @@
         <form class="subscribe-form" id="subscribeForm" novalidate>
           <input type="email" id="emailInput" name="email" autocomplete="email"
                  placeholder="you@example.com" aria-label="Email / 邮箱">
-          <button type="submit">
+          <button type="submit" class="press" data-umami-event="subscribe">
             <span class="zh">写信订阅</span>
             <span class="en">Subscribe by email</span>
           </button>
@@ -1362,9 +1373,13 @@
     </p>
     <p class="contact-list">
       <span class="zh">联系我们</span><span class="en">Contact</span>:
-      <a href="mailto:hello@getboundly.com">hello@getboundly.com</a>
+      <a href="mailto:hello@getboundly.com" data-umami-event="email">hello@getboundly.com</a>
       · <span class="zh">Bridgeboard 反馈</span><span class="en">Bridgeboard feedback</span>:
-      <a href="mailto:feedback@getboundly.com">feedback@getboundly.com</a>
+      <a href="mailto:feedback@getboundly.com" data-umami-event="email">feedback@getboundly.com</a>
+    </p>
+    <p>
+      <span class="zh">本站用 Umami 统计访问量，不使用 cookie，不收集个人信息。</span>
+      <span class="en">This site counts visits with Umami: no cookies, no personal data.</span>
     </p>
     <p>getboundly.com</p>
   </div>
