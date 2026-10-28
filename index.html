@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bridgeboard · 你的专属 Blackboard 看板 | Boundly</title>
-<meta name="description" content="Bridgeboard：你的专属 Blackboard 看板。截止提醒、文件下载、手机提醒、清单、消息、公告、成绩，一个页面看完，免费下载 Windows 版。由 Boundly 制作。Your personal Blackboard dashboard, free for Windows.">
+<meta name="description" content="Bridgeboard：你的专属 Blackboard 看板。截止提醒、文件下载、手机提醒、清单、消息、公告、成绩，一个页面看完，免费下载 Windows 版和 Mac 版（试用）。由 Boundly 制作。Your personal Blackboard dashboard, free for Windows and Mac (trial).">
 <meta name="theme-color" content="#f2f6f3">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="3c00e99c-64aa-47f9-b815-0ec1c84761ea"></script>
 <style>
@@ -293,6 +293,15 @@
   }
   .bb-download:hover { text-decoration: none; box-shadow: 0 10px 28px rgba(0, 0, 0, .28); }
   .bb-download svg { width: 20px; height: 20px; flex: none; }
+  /* Mac (trial): the same button, outlined instead of filled, so Windows stays the main one */
+  .bb-download-mac {
+    background: transparent;
+    color: var(--on-hero);
+    border: 1.5px solid rgba(255, 255, 255, .45);
+    padding: 13.5px 30.5px;
+    box-shadow: none;
+  }
+  .bb-download-mac:hover { box-shadow: none; background: rgba(255, 255, 255, .08); }
   .bb-secondary {
     color: var(--on-hero);
     border: 1px solid rgba(255, 255, 255, .28);
@@ -307,6 +316,7 @@
     color: var(--on-hero-muted);
   }
   .bb-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .bb-note + .bb-note { margin-top: 4px; }
   .bb-not-windows {
     display: none;
     margin-top: 16px;
@@ -826,17 +836,25 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
           <span class="zh">下载 Windows 版</span><span class="en">Download for Windows</span>
         </a>
+        <a class="bb-download bb-download-mac press" id="bbDownloadMac" data-umami-event="download-mac" href="https://github.com/HeathTeng/Bridgeboard/releases/latest/download/Bridgeboard-Mac.zip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          <span class="zh">下载 Mac 版（试用）</span><span class="en">Download for Mac (trial)</span>
+        </a>
         <a class="bb-secondary press" href="#bb-features">
           <span class="zh">先看看它能做什么</span><span class="en">See what it does</span>
         </a>
       </div>
       <p class="bb-note">
-        <span class="zh">约 34 MB · 解压后双击 start.bat 就能用，不用安装其他东西 · <a href="#bb-install">三步装好</a></span>
-        <span class="en">About 34 MB · Unzip and double-click start.bat; nothing else to install · <a href="#bb-install">Set up in 3 steps</a></span>
+        <span class="zh">Windows 约 34 MB，Mac 约 77 MB · 解压后双击 start.bat（Mac 是 start.command）就能用，不用安装其他东西 · <a href="#bb-install">三步装好</a></span>
+        <span class="en">About 34 MB for Windows, 77 MB for Mac · Unzip and double-click start.bat (start.command on a Mac); nothing else to install · <a href="#bb-install">Set up in 3 steps</a></span>
+      </p>
+      <p class="bb-note">
+        <span class="zh">Mac 第一次打开会被拦一下：到「系统设置 → 隐私与安全性」点「仍要打开」就好。</span>
+        <span class="en">The first time, macOS stops it once: go to System Settings → Privacy &amp; Security and click "Open Anyway".</span>
       </p>
       <p class="bb-not-windows" id="bbNotWindows" role="note">
-        <span class="zh">Bridgeboard 目前只有 Windows 版，Mac 版正在做。请在你的 Windows 电脑上打开 getboundly.com 下载。</span>
-        <span class="en">Bridgeboard is Windows-only for now; a Mac version is on the way. Open getboundly.com on your Windows computer to download it.</span>
+        <span class="zh">Bridgeboard 要在电脑上用（Windows 或 Mac），请在电脑上打开 getboundly.com 下载。</span>
+        <span class="en">Bridgeboard runs on a computer (Windows or Mac). Open getboundly.com on your computer to download it.</span>
         <button class="bb-copy" id="bbCopy" type="button"><span class="zh">复制网址</span><span class="en">Copy link</span></button>
         <span id="bbCopied" aria-live="polite"></span>
       </p>
@@ -978,8 +996,8 @@
           <div class="num">1</div>
           <h3><span class="zh">下载</span><span class="en">Download</span></h3>
           <p>
-            <span class="zh">点上面的「下载 Windows 版」。</span>
-            <span class="en">Click "Download for Windows" above.</span>
+            <span class="zh">点上面的「下载 Windows 版」；Mac 点「下载 Mac 版（试用）」。</span>
+            <span class="en">Click "Download for Windows" above; on a Mac, "Download for Mac (trial)".</span>
           </p>
           <p class="warn">
             <span class="zh">浏览器如果说「不常下载」，点「保留」。</span>
@@ -990,8 +1008,8 @@
           <div class="num">2</div>
           <h3><span class="zh">先解压</span><span class="en">Unzip first</span></h3>
           <p>
-            <span class="zh">右键压缩包，选「全部解压缩」，放到任意文件夹或 U 盘。</span>
-            <span class="en">Right-click the zip and choose "Extract All", into any folder or a USB drive.</span>
+            <span class="zh">右键压缩包，选「全部解压缩」，放到任意文件夹或 U 盘。Mac 上双击压缩包就会解压（Safari 可能已经自动解压好了）。</span>
+            <span class="en">Right-click the zip and choose "Extract All", into any folder or a USB drive. On a Mac, double-click the zip (Safari may have unzipped it already).</span>
           </p>
           <p class="warn">
             <span class="zh">一定要先解压。直接在压缩包里双击是用不了的。</span>
@@ -1008,6 +1026,10 @@
           <p class="warn">
             <span class="zh">Windows 提示「已保护你的电脑」时，点「更多信息」，再点「仍要运行」。</span>
             <span class="en">If Windows says "Windows protected your PC", click "More info", then "Run anyway".</span>
+          </p>
+          <p class="warn">
+            <span class="zh">Mac：解压后双击 start.command，第一次按上面的方法放行，终端窗口不要关。</span>
+            <span class="en">On a Mac: double-click start.command, allow it the first time as described above, and keep the Terminal window open.</span>
           </p>
         </div>
       </div>
@@ -1030,15 +1052,15 @@
         <details>
           <summary><span class="zh">用 Mac 能用吗？</span><span class="en">Does it work on a Mac?</span></summary>
           <p>
-            <span class="zh">目前只有 Windows 版，Mac 版正在做。想第一时间知道，可以在页面最下面订阅。</span>
-            <span class="en">Not yet: it's Windows-only for now, and a Mac version is on the way. Subscribe at the bottom of this page to hear when it's ready.</span>
+            <span class="zh">能，Mac 试用版已发布，苹果芯片和 Intel 的 Mac 都可以，不用另外装东西。点上面的「下载 Mac 版（试用）」，第一次打开时到「系统设置 → 隐私与安全性」点「仍要打开」。暂时不能开机自动启动。</span>
+            <span class="en">Yes. The Mac trial is out and works on Apple silicon and Intel Macs, with nothing else to install. Click "Download for Mac (trial)" above; the first time, go to System Settings → Privacy &amp; Security and click "Open Anyway". Starting at login is Windows-only for now.</span>
           </p>
         </details>
         <details>
           <summary><span class="zh">那个黑色窗口能关吗？</span><span class="en">Can I close the black window?</span></summary>
           <p>
-            <span class="zh">用的时候别关，关掉它面板和手机提醒都会停。用完可以关，下次再双击 start.bat 就行。</span>
-            <span class="en">Not while you're using it: closing it stops the dashboard and phone alerts. Close it when you're done and double-click start.bat next time.</span>
+            <span class="zh">用的时候别关，关掉它面板和手机提醒都会停（Mac 上是终端窗口，也一样）。用完可以关，下次再双击 start.bat（Mac 是 start.command）就行。</span>
+            <span class="en">Not while you're using it: closing it stops the dashboard and phone alerts (on a Mac it's the Terminal window, same rule). Close it when you're done and double-click start.bat (start.command on a Mac) next time.</span>
           </p>
         </details>
         <details>
@@ -1439,10 +1461,12 @@
   mark();
   start();
 
-  /* ---------- Bridgeboard: Windows-only download ---------- */
+  /* ---------- Bridgeboard: Windows and Mac downloads; phones, tablets and Linux get a note ---------- */
   var ua = navigator.userAgent || '';
   var isWindows = /Windows/i.test(ua) && !/Windows Phone/i.test(ua);
-  if (!isWindows) document.getElementById('bbNotWindows').classList.add('show');
+  // iPhone says "like Mac OS X" but not Macintosh; an iPad says Macintosh but has a touch screen.
+  var isMac = /Macintosh/i.test(ua) && !(navigator.maxTouchPoints > 1);
+  if (!isWindows && !isMac) document.getElementById('bbNotWindows').classList.add('show');
   var copyBtn = document.getElementById('bbCopy');
   var copied = document.getElementById('bbCopied');
   copyBtn.addEventListener('click', function () {
