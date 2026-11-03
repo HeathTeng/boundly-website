@@ -743,6 +743,25 @@
   footer .east { color: var(--ink); font-size: 14px; font-weight: 600; margin-bottom: 10px; }
   .contact-list { margin-top: 4px; }
 
+  /* ============ Bridge series · Bridgepulse ============ */
+  .bp-card { padding: 40px 44px 32px; }
+  .bp-card .eyebrow { margin-bottom: 12px; }
+  .bp-title { font-weight: 700; font-size: clamp(24px, 3.2vw, 32px); color: var(--ink); line-height: 1.35; }
+  .bp-sub { margin-top: 2px; color: var(--muted); font-size: 15.5px; }
+  .bp-lead { margin-top: 14px; max-width: 36em; font-size: 17px; color: var(--body); }
+  .bp-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .bp-tags li { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 14px; font-size: 13.5px; }
+  .bp-shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 28px; max-width: 780px; }
+  .bp-shots figure { margin: 0; }
+  /* 小工具是深色的：圆角 + 浅阴影，和浅色页面分开 */
+  .bp-shots img { display: block; width: 100%; height: auto; border-radius: 18px; box-shadow: 0 10px 26px rgba(31, 61, 51, .16), 0 2px 6px rgba(31, 61, 51, .08); }
+  .bp-shot-note { margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .bp-actions { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .bp-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; font-weight: 700; font-size: 16px; padding: 12px 28px; border-radius: 999px; box-shadow: var(--shadow); }
+  .bp-btn:hover { text-decoration: none; background: #23694e; }
+  .bp-note { font-size: 13.5px; color: var(--muted); }
+  .bp-legal { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+
   /* ============ Scroll reveal (subtle) ============ */
   @media (prefers-reduced-motion: no-preference) {
     .reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
@@ -774,6 +793,10 @@
     .subscribe-box { padding: 28px 22px; }
     .subscribe-form button { flex: 1 1 100%; }
     .door { padding-top: 84px; }
+    .bp-card { padding: 28px 20px 24px; }
+    .bp-shots { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 70%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+    .bp-shots figure { scroll-snap-align: start; }
+    .bp-btn { width: 100%; justify-content: center; }
   }
 </style>
 </head>
@@ -790,6 +813,7 @@
         <a href="#bridgeboard">Bridgeboard</a>
         <a href="#bb-install"><span class="zh">安装</span><span class="en">Set up</span></a>
         <a href="#bb-privacy"><span class="zh">隐私和安全</span><span class="en">Privacy</span></a>
+        <a href="#bridgepulse">Bridgepulse</a>
         <a href="#boundly">Boundly</a>
         <a href="#subscribe"><span class="zh">联系</span><span class="en">Contact</span></a>
       </nav>
@@ -1110,6 +1134,39 @@
           <span class="en">Questions? Write to <a href="mailto:feedback@getboundly.com" data-umami-event="email">feedback@getboundly.com</a></span>
         </p>
       </details>
+    </div>
+  </section>
+
+  <!-- ============ Bridge series · Bridgepulse ============ -->
+  <section id="bridgepulse">
+    <div class="wrap">
+      <div class="bp-card glass reveal">
+        <p class="eyebrow"><span class="zh">Bridge 系列 · Bridgepulse 脉桥</span><span class="en">BRIDGE SERIES · BRIDGEPULSE</span></p>
+        <h2 class="bp-title">Bridgepulse 脉桥</h2>
+        <p class="bp-sub"><span class="zh">WHOOP 数据中文助手（非官方）</span><span class="en">A Chinese companion for your WHOOP data (unofficial)</span></p>
+        <p class="bp-lead">
+          <span class="zh">把你的 WHOOP 数据翻成中文，放在电脑桌面上，帮你看懂恢复、睡眠和负荷。</span>
+          <span class="en">Puts your WHOOP data on your desktop in Chinese, so your recovery, sleep and strain are easy to understand.</span>
+        </p>
+        <ul class="bp-tags">
+          <li><span class="zh">全中文解读</span><span class="en">Explained in Chinese</span></li>
+          <li><span class="zh">今日建议</span><span class="en">Daily advice</span></li>
+          <li><span class="zh">数据只在本机</span><span class="en">Data stays on your computer</span></li>
+        </ul>
+        <div class="bp-shots" tabindex="0" aria-label="Bridgepulse 截图 / screenshots">
+          <figure><img src="assets/bridgepulse-1.jpg" width="380" height="660" loading="lazy" alt="Bridgepulse 今日页：睡眠、恢复、负荷三个圆环和今日建议 / Today page"></figure>
+          <figure><img src="assets/bridgepulse-2.jpg" width="380" height="660" loading="lazy" alt="Bridgepulse 睡眠详情 / Sleep details"></figure>
+          <figure><img src="assets/bridgepulse-3.jpg" width="380" height="660" loading="lazy" alt="Bridgepulse 单次运动详情 / Workout details"></figure>
+        </div>
+        <p class="bp-shot-note"><span class="zh">示例数据截图</span><span class="en">Screenshots with sample data</span></p>
+        <div class="bp-actions">
+          <a class="bp-btn press" href="https://github.com/HeathTeng/Bridgepulse" target="_blank" rel="noopener" data-umami-event="github-bridgepulse">
+            <span class="zh">在 GitHub 查看</span><span class="en">View on GitHub</span>
+          </a>
+          <span class="bp-note"><span class="zh">目前只有 Windows 版，需要自己申请 WHOOP 开发者 ID</span><span class="en">Windows only for now. You need your own WHOOP developer ID.</span></span>
+        </div>
+        <p class="bp-legal"><span class="zh">非官方工具，与 WHOOP 公司无关。WHOOP 是 WHOOP, Inc. 的商标。</span><span class="en">An unofficial tool, not affiliated with WHOOP. WHOOP is a trademark of WHOOP, Inc.</span></p>
+      </div>
     </div>
   </section>
 
